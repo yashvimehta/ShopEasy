@@ -33,7 +33,7 @@ public interface ApiInterface {
 
     @Multipart
     @POST("fit")
-    Call<VTRResult> sendVTRImage(@Part MultipartBody.Part image_cloth,@Part MultipartBody.Part image_user );
+    Call<VTRResult> sendVTRImage(@Part MultipartBody.Part img1 , @Part MultipartBody.Part img2 );
 
     @Multipart
     @POST("recommend")

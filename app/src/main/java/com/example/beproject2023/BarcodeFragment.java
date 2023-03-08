@@ -66,7 +66,7 @@ public class BarcodeFragment extends Fragment {
     Bitmap bitmap;
     ImageView imageView;
     TextView messageTextView;
-    Button retryButton, gotoResultButton;
+    Button retryButton, okayButton;
     Uri currentImageUri;
 
     TextInputLayout barcodeTextInputLayout;
@@ -173,7 +173,7 @@ public class BarcodeFragment extends Fragment {
                         barcodeTextInputText.setText(mResult.getBarcodeText());
                         barcodeTextInputLayout.setVisibility(View.VISIBLE);
 
-                        gotoResultButton.setVisibility(View.VISIBLE);
+                        okayButton.setVisibility(View.VISIBLE);
                         retryButton.setVisibility(View.INVISIBLE);
 
 
@@ -296,10 +296,10 @@ public class BarcodeFragment extends Fragment {
 //        DocumentReference mDocumentReference = db.collection("Users").document(mUser.getUid());
 
         View view = inflater.inflate(R.layout.fragment_barcode, container, false);
-        messageTextView = view.findViewById(R.id.messageTextView);
+        messageTextView = view.findViewById(R.id.barcodeMessageTextView);
 
         retryButton = view.findViewById(R.id.buttonDetect);
-        gotoResultButton = view.findViewById(R.id.barcodeGotoResultButton);
+        okayButton = view.findViewById(R.id.barcodeOkayButton);
         progressBar = view.findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
 
@@ -315,7 +315,7 @@ public class BarcodeFragment extends Fragment {
             public void onClick(View v) {
                 retryButton.setVisibility(View.INVISIBLE);
 
-                gotoResultButton.setVisibility(View.INVISIBLE);
+                okayButton.setVisibility(View.INVISIBLE);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (HomePage.contextOfApplication.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -335,7 +335,7 @@ public class BarcodeFragment extends Fragment {
             public void onClick(View v) {
                 retryButton.setVisibility(View.INVISIBLE);
 
-                gotoResultButton.setVisibility(View.INVISIBLE);
+                okayButton.setVisibility(View.INVISIBLE);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (HomePage.contextOfApplication.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -364,6 +364,22 @@ public class BarcodeFragment extends Fragment {
                 barcodeTextInputLayout.setVisibility(View.INVISIBLE);
                 barcodeTextInputText.setText("na");
                 retryButton.setVisibility(View.INVISIBLE);
+
+            }
+        });
+
+        okayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                messageTextView.setText("Select or click an Image");
+                messageTextView.setVisibility(View.VISIBLE);
+                barcodeTextInputText.setText("na");
+                barcodeTextInputText.setVisibility(View.INVISIBLE);
+                barcodeTextInputLayout.setVisibility(View.INVISIBLE);
+                retryButton.setVisibility(View.INVISIBLE);
+                imageView.setVisibility(View.INVISIBLE);
+                okayButton.setVisibility(View.INVISIBLE);
+
 
             }
         });

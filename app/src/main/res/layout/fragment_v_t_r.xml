@@ -9,12 +9,12 @@
 
 
     <ImageView
-        android:id="@+id/imageViewSelectImage"
+        android:id="@+id/VTRimageViewSelectImage"
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/instructionsVTRTextView"
         app:srcCompat="@drawable/logo" />
@@ -37,29 +37,29 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/imageViewCamera"
+        android:id="@+id/VTRImageViewCamera"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toStartOf="@+id/imageViewGallery"
+        app:layout_constraintEnd_toStartOf="@+id/VTRImageViewGallery"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewSelectImage"
+        app:layout_constraintTop_toBottomOf="@+id/VTRimageViewSelectImage"
         app:srcCompat="@drawable/ic_baseline_camera_alt_24" />
 
     <ImageView
-        android:id="@+id/imageViewGallery"
+        android:id="@+id/VTRImageViewGallery"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/imageViewCamera"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewSelectImage"
+        app:layout_constraintStart_toEndOf="@+id/VTRImageViewCamera"
+        app:layout_constraintTop_toBottomOf="@+id/VTRimageViewSelectImage"
         app:srcCompat="@drawable/ic_baseline_image_24" />
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/VTRProgressBar"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -69,17 +69,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/trialImageTextInputLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/VTRTextInputLayout" />
 
     <Button
-        android:id="@+id/VTRgotoResultButton"
+        android:id="@+id/VTROkayButton"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="50dp"
         android:layout_marginEnd="50dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/custom_button"
-        android:text="Finalise"
+        android:text="Okay"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         android:visibility="invisible"
@@ -89,7 +89,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/messageTextView"
+        android:id="@+id/VTRMessageTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -99,35 +99,53 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
+        app:layout_constraintTop_toBottomOf="@+id/VTRProgressBar" />
+
 
     <TextView
         android:id="@+id/instructionsVTRTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="44dp"
         android:layout_marginEnd="32dp"
         android:gravity="center_horizontal"
-        android:text="Make sure that the image of cloth is  visible"
+        android:text="Make sure that the cloth image is clearly visible"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/VTRFragmentName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:gravity="center_horizontal"
+        android:text="Virtual Trial Room"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/trialImageTextInputLayout"
+        android:id="@+id/VTRTextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
+        android:background="@drawable/edittext_border"
         android:paddingLeft="5dp"
         android:paddingTop="5dp"
-        android:background="@drawable/edittext_border"
         android:textColor="#FFFFFF"
         android:textColorHint="#FFFFFFFF"
         android:visibility="invisible"
@@ -135,10 +153,10 @@
         app:hintTextColor="#FFFFFF"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewCamera">
+        app:layout_constraintTop_toBottomOf="@+id/VTRImageViewCamera">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/trialImageTextInputText"
+            android:id="@+id/VTRTextInputText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@null"
@@ -148,5 +166,38 @@
             android:paddingRight="5dp"
             android:paddingBottom="5dp" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageView
+        android:id="@+id/VTRHumanImage"
+        android:layout_width="154dp"
+        android:layout_height="146dp"
+        android:layout_marginStart="38dp"
+        android:layout_marginTop="160dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/VTRClothImage"
+        android:layout_width="154dp"
+        android:layout_height="146dp"
+        android:layout_marginTop="160dp"
+        android:layout_marginEnd="32dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/VTRFinalImage"
+        android:layout_width="154dp"
+        android:layout_height="146dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/VTRimageViewSelectImage"
+        tools:srcCompat="@tools:sample/avatars" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,19 +8,101 @@
     android:background="@drawable/background_gradient">
 
 
+    <TextView
+        android:id="@+id/fragmentName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:gravity="center_horizontal"
+        android:text="Recommendations"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
-        android:id="@+id/imageViewSelectImage"
+        android:id="@+id/recommendationImageViewSelectImage"
         android:layout_width="300dp"
         android:layout_height="300dp"
+        android:layout_marginTop="64dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/instructionsRecommendationTextView"
+        app:srcCompat="@drawable/logo" />
+
+    <ImageView
+        android:id="@+id/recommendationImageViewCamera"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/recommendationImageViewGallery"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recommendationImageViewSelectImage"
+        app:srcCompat="@drawable/ic_baseline_camera_alt_24" />
+
+    <ImageView
+        android:id="@+id/recommendationImageViewGallery"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/recommendationImageViewCamera"
+        app:layout_constraintTop_toBottomOf="@+id/recommendationImageViewSelectImage"
+        app:srcCompat="@drawable/ic_baseline_image_24" />
+
+    <ProgressBar
+        android:id="@+id/recommendationProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="173dp"
+        android:indeterminateTint="@android:color/white"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/instructionsTextView"
-        app:srcCompat="@drawable/logo" />
+        app:layout_constraintTop_toBottomOf="@+id/recommendationImageViewSelectImage" />
+
+    <TextView
+        android:id="@+id/recommendationMessageTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Select or click an Image"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recommendationProgressBar" />
+
+    <TextView
+        android:id="@+id/instructionsRecommendationTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="32dp"
+        android:gravity="center_horizontal"
+        android:text="Make sure that the cloth image is clearly visible"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/buttonDetect"
+        android:id="@+id/recommendationRetryButton"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="50dp"
@@ -33,120 +115,81 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <ImageView
-        android:id="@+id/imageViewCamera"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toStartOf="@+id/imageViewGallery"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewSelectImage"
-        app:srcCompat="@drawable/ic_baseline_camera_alt_24" />
-
-    <ImageView
-        android:id="@+id/imageViewGallery"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/imageViewCamera"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewSelectImage"
-        app:srcCompat="@drawable/ic_baseline_image_24" />
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="84dp"
-        android:indeterminateTint="@android:color/white"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/barcodeTextInputLayout" />
-
     <Button
-        android:id="@+id/barcodeGotoResultButton"
+        android:id="@+id/recommendationOkay"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="50dp"
         android:layout_marginEnd="50dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/custom_button"
-        android:text="Finalise"
+        android:text="Okay"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/messageTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Select or click an Image"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
-
-    <TextView
-        android:id="@+id/instructionsTextView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:id="@+id/recommendedImage1"
+        android:layout_width="174dp"
+        android:layout_height="157dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:gravity="center_horizontal"
-        android:text="Make sure that the barcode is clearly visible"
-        android:textAlignment="center"
-        android:textColor="#FFFFFF"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/barcodeTextInputLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
-        android:paddingLeft="5dp"
-        android:paddingTop="5dp"
-        android:background="@drawable/edittext_border"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFFFF"
+        android:layout_marginTop="64dp"
         android:visibility="invisible"
-        app:boxBackgroundMode="none"
-        app:hintTextColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewCamera">
+        app:layout_constraintTop_toBottomOf="@+id/instructionsRecommendationTextView"
+        tools:srcCompat="@tools:sample/avatars" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/barcodeTextInputText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@null"
-            android:hint="Member ID"
-            android:paddingLeft="5dp"
-            android:paddingTop="5dp"
-            android:paddingRight="5dp"
-            android:paddingBottom="5dp" />
-    </com.google.android.material.textfield.TextInputLayout>
+    <ImageView
+        android:id="@+id/recommendedImage3"
+        android:layout_width="174dp"
+        android:layout_height="157dp"
+        android:layout_marginStart="31dp"
+        android:layout_marginTop="12dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recommendedImage1"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/recommendedImage2"
+        android:layout_width="174dp"
+        android:layout_height="157dp"
+        android:layout_marginTop="64dp"
+        android:layout_marginEnd="32dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/instructionsRecommendationTextView"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/recommendedImage4"
+        android:layout_width="174dp"
+        android:layout_height="157dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="32dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recommendedImage2"
+        tools:srcCompat="@tools:sample/avatars"
+        tools:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/recommendedImage5"
+        android:layout_width="174dp"
+        android:layout_height="157dp"
+        android:layout_marginTop="15dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/recommendationImageViewGallery"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/recommendationImageViewCamera"
+        app:layout_constraintTop_toBottomOf="@+id/recommendedImage3"
+        tools:srcCompat="@tools:sample/avatars" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

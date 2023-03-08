@@ -10,10 +10,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.provider.OpenableColumns;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +34,8 @@ import androidx.fragment.app.Fragment;
 import com.example.beproject2023.ApiHelper.ApiInterface;
 import com.example.beproject2023.ApiHelper.VTRResult;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,6 +45,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -61,19 +69,20 @@ public class VTRFragment extends Fragment {
     private static final int STORAGE_REQUEST = 7;
     private static final int SELECT_FILE = 8;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
+    public static final int DEFAULT=0;
 
+    private StorageReference storage;
+
+    final Bitmap[] photo_user = new Bitmap[1];
     Bitmap bitmap;
-    ImageView imageView;
-    TextView messageTextView;
-    Button retryButton, gotoResultButton;
+    FirebaseUser user;
+    ImageView imageView, VTRHumanImage, VTRClothImage , VTRFinalImage, camera, gallery;
+    TextView messageTextView, instructionsVTRTextView;
+    Button retryButton, okayButton;
     Uri currentImageUri;
-
-    TextInputLayout trialImageTextInputLayout;
-    EditText trialImageTextInputText;
 
     FirebaseAuth firebaseAuth;
 
-    final String[] issueDuration = new String[1];
 
     @SuppressLint("StaticFieldLeak")
     static ProgressBar progressBar;
@@ -109,6 +118,7 @@ public class VTRFragment extends Fragment {
         Long tsLong = System.currentTimeMillis()/1000;
         String ts = tsLong.toString();
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, ts, null);
+        Log.i("lol5",path );
         return Uri.parse(path);
     }
 
@@ -119,7 +129,11 @@ public class VTRFragment extends Fragment {
             if (cursor != null) {
                 cursor.moveToFirst();
                 int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+
+                int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                Log.i("polll", cursor.getString(nameIndex));
                 path = cursor.getString(idx);
+                Log.i("abc", path);
                 cursor.close();
             }
         }
@@ -132,34 +146,21 @@ public class VTRFragment extends Fragment {
         messageTextView.setVisibility(View.INVISIBLE);
 
         try {
-            final Bitmap[] photo_user = new Bitmap[1];
-            FirebaseUser user = firebaseAuth.getCurrentUser();
-            FirebaseFirestore db = FirebaseFirestore.getInstance();
-            db.collection("users")
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    String uuid = String.valueOf(document.getData().get("uuid"));
-                                    if(uuid.equals(user.getUid())){
-                                        photo_user[0] = Bitmap.createBitmap((Bitmap) document.getData().get("image"));
-                                        break;
-                                    }
-                                }
-                            } else {
-                                Log.d(TAG, "Error getting documents: ", task.getException());
-                            }
-                        }
-                    });
 
+            Bitmap photo_user = getPhotoUser();
 
             Bitmap photo_cloth = MediaStore.Images.Media.getBitmap(HomePage.contextOfApplication.getContentResolver(), currentImageUri);
-            imageView.setImageBitmap(photo_cloth);
+            imageView.setImageBitmap(photo_user);
+
+            Log.i(photo_cloth.toString(), "poi1");
+            Log.i(photo_user.toString(), "poi2");
 
             Uri tempUri_cloth = saveBitmapImage(getContext(), photo_cloth);
-            Uri tempUri_user = saveBitmapImage(getContext(), photo_user[0]);
+            Uri tempUri_user = saveBitmapImage(getContext(), photo_user);
+
+            Log.i("lol", tempUri_cloth.getPath());
+            Log.i("lol", tempUri_user.getPath());
+
             String filePath_cloth = getFilePathFromUri(tempUri_cloth);
             String filePath_user = getFilePathFromUri(tempUri_user);
 
@@ -171,16 +172,18 @@ public class VTRFragment extends Fragment {
                     .build();
             RequestBody requestFile_cloth = RequestBody.create(MediaType.parse("multipart/form-data"), file_cloth);
             RequestBody requestFile_user = RequestBody.create(MediaType.parse("multipart/form-data"), file_user);
-            MultipartBody.Part body_cloth = MultipartBody.Part.createFormData("image_cloth", file_cloth.getName(), requestFile_cloth);
-            MultipartBody.Part body_user = MultipartBody.Part.createFormData("image_cloth", file_user.getName(), requestFile_user);
+            MultipartBody.Part body_cloth = MultipartBody.Part.createFormData("img2", "001502_1.jpg", requestFile_cloth);
+            MultipartBody.Part body_user = MultipartBody.Part.createFormData("img1", "001858_0.jpg", requestFile_user);
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(ApiInterface.BASE_URL_PREDICTOR)
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(okHttpClient)
                     .build();
 
+            Log.i("fil1",file_cloth.getName() );
+            Log.i("fil2",file_user.getName() );
             ApiInterface apiInterface = retrofit.create(ApiInterface.class);
-            Call<VTRResult> mCall = apiInterface.sendVTRImage(body_cloth, body_user);
+            Call<VTRResult> mCall = apiInterface.sendVTRImage(body_user, body_cloth);
             mCall.enqueue(new Callback<VTRResult>() {
                 @Override
                 public void onResponse(Call<VTRResult> call, Response<VTRResult> response) {
@@ -189,19 +192,41 @@ public class VTRFragment extends Fragment {
                         Log.i("Success Checking", mResult.getVTRText() );
 
                         messageTextView.setVisibility(View.INVISIBLE);
-                        trialImageTextInputText.setText(mResult.getVTRText());
-                        trialImageTextInputLayout.setVisibility(View.VISIBLE);
 
-                        gotoResultButton.setVisibility(View.VISIBLE);
+                        okayButton.setVisibility(View.VISIBLE);
                         retryButton.setVisibility(View.INVISIBLE);
+
+                        VTRClothImage.setImageBitmap(photo_cloth);
+                        VTRHumanImage.setImageBitmap(photo_user);
+
+                        VTRClothImage.setVisibility(View.VISIBLE);
+                        VTRHumanImage.setVisibility(View.VISIBLE);
+
+                        VTRFinalImage.setVisibility(View.VISIBLE);
+
+                        byte [] encodeByte = Base64.decode(mResult.getVTRText(),DEFAULT);
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+
+                        VTRFinalImage.setImageBitmap(bitmap);
+
+                        instructionsVTRTextView.setVisibility(View.INVISIBLE);
+                        okayButton.setVisibility(View.VISIBLE);
+
+                        messageTextView.setVisibility(View.INVISIBLE);
+
+                        retryButton.setVisibility(View.INVISIBLE);
+                        imageView.setVisibility(View.INVISIBLE);
+
+                        camera.setVisibility(View.INVISIBLE);
+
+                        gallery.setVisibility(View.INVISIBLE);
+
 
 
                     } else {
                         String text = "Failure";
                         messageTextView.setText(text);
                         messageTextView.setVisibility(View.VISIBLE);
-                        trialImageTextInputLayout.setVisibility(View.INVISIBLE);
-                        trialImageTextInputText.setText("na");
                         Log.i("Success Checking", mResult.getVTRError()+" ");
 
                     }
@@ -223,8 +248,6 @@ public class VTRFragment extends Fragment {
                     String text = "There was some error";
                     messageTextView.setText(text);
                     messageTextView.setVisibility(View.VISIBLE);
-                    trialImageTextInputLayout.setVisibility(View.INVISIBLE);
-                    trialImageTextInputText.setText("na");
                     progressBar.setVisibility(View.INVISIBLE);
 
                     retryButton.setVisibility(View.VISIBLE);
@@ -252,43 +275,21 @@ public class VTRFragment extends Fragment {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Bitmap photo = (Bitmap) data.getExtras().get("data");
+        Cursor cursor = HomePage.contextOfApplication.getContentResolver().query(data.getData(), null, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+
+            int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+            Log.i("frrrr", cursor.getString(nameIndex));
+            cursor.close();
+        }
+        Log.i("power", String.valueOf(data));
+        Uri imageLocation = data.getData();
+        currentImageUri=imageLocation;
         getPredictionsFromServer();
 
-        // Image using camera
-//        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
-//            Log.i("12345",data.getExtras().toString());
-//            Bitmap photo = (Bitmap) data.getExtras().get("data");
-//
-//            Uri tempUri = saveBitmapImage(getContext(), photo);
-//            CropImage.activity(tempUri)
-//                    .setGuidelines(CropImageView.Guidelines.ON)
-//                    .setCropShape(CropImageView.CropShape.RECTANGLE)
-//                    .start(getContext(), this);
-//        }
-//
-//        // Image from gallery
-//        if (requestCode == SELECT_FILE && resultCode == Activity.RESULT_OK) {
-//            Uri imageLocation = data.getData();
-////            currentImageUri=imageLocation;
-////            getPredictionsFromServer();
-//            CropImage.activity(imageLocation)
-//                    .setGuidelines(CropImageView.Guidelines.ON)
-//                    .setCropShape(CropImageView.CropShape.RECTANGLE)
-//                    .start(getContext(), this);
-//
-//            Log.i("WILL", "will call cropper");
-//        }
-//
-//        // Image cropper
-//        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
-//
-//            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-//            currentImageUri = result.getUri();
-//            Log.i("IMG CROPPER", "In cropper");
-//
-//            getPredictionsFromServer();
-//
-//        }
     }
 
 
@@ -299,43 +300,72 @@ public class VTRFragment extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
 
-//        //get issue duration
-//        DocumentReference rulesDocumentRef = db.collection("Rules").document("ruless");
-//        rulesDocumentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    issueDuration[0] = String.valueOf(task.getResult().getData().get("issueDuration(days)"));
-//                }
-//            }
-//        });
-//
-//        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-//
-//        assert mUser != null;
-//        DocumentReference mDocumentReference = db.collection("Users").document(mUser.getUid());
 
         View view = inflater.inflate(R.layout.fragment_v_t_r, container, false);
-        messageTextView = view.findViewById(R.id.messageTextView);
+        messageTextView = view.findViewById(R.id.VTRMessageTextView);
 
         retryButton = view.findViewById(R.id.buttonDetect);
-        gotoResultButton = view.findViewById(R.id.VTRgotoResultButton);
-        progressBar = view.findViewById(R.id.progressBar);
+        okayButton = view.findViewById(R.id.VTROkayButton);
+        progressBar = view.findViewById(R.id.VTRProgressBar);
         progressBar.setVisibility(View.INVISIBLE);
 
-        trialImageTextInputLayout = view.findViewById(R.id.trialImageTextInputLayout);
-        trialImageTextInputText = view.findViewById(R.id.trialImageTextInputText);
+        VTRHumanImage = view.findViewById(R.id.VTRHumanImage);
+        VTRClothImage = view.findViewById(R.id.VTRClothImage);
+        VTRFinalImage = view.findViewById(R.id.VTRFinalImage);
+
+        instructionsVTRTextView = view.findViewById(R.id.instructionsVTRTextView);
 
 
-        imageView = view.findViewById(R.id.imageViewSelectImage);
+        imageView = view.findViewById(R.id.VTRimageViewSelectImage);
 
-        ImageView camera = view.findViewById(R.id.imageViewCamera);
+
+        storage = FirebaseStorage.getInstance().getReference().child("user_images/001858_0.jpg");
+
+        try{
+            final File localFile= File.createTempFile("001858_0","jpg" );
+            storage.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    photo_user[0] = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                    Log.i(photo_user[0].toString(), "poi");
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    e.printStackTrace();
+
+                    Log.i("errrorr", e.toString()+"");
+
+                    String text = "There was some error";
+                    messageTextView.setText(text);
+                    messageTextView.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.INVISIBLE);
+
+                    retryButton.setVisibility(View.VISIBLE);
+                }
+            });
+        } catch(Exception e){
+            e.printStackTrace();
+            Log.i("errrorr", e.toString()+"");
+
+            String text = "There was some error";
+            messageTextView.setText(text);
+            messageTextView.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.INVISIBLE);
+
+            retryButton.setVisibility(View.VISIBLE);
+        }
+
+
+
+        camera = view.findViewById(R.id.VTRImageViewCamera);
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 retryButton.setVisibility(View.INVISIBLE);
 
-                gotoResultButton.setVisibility(View.INVISIBLE);
+                okayButton.setVisibility(View.INVISIBLE);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (HomePage.contextOfApplication.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -349,13 +379,13 @@ public class VTRFragment extends Fragment {
             }
         });
 
-        ImageView gallery = view.findViewById(R.id.imageViewGallery);
+        gallery = view.findViewById(R.id.VTRImageViewGallery);
         gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 retryButton.setVisibility(View.INVISIBLE);
 
-                gotoResultButton.setVisibility(View.INVISIBLE);
+                okayButton.setVisibility(View.INVISIBLE);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (HomePage.contextOfApplication.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -369,26 +399,38 @@ public class VTRFragment extends Fragment {
 
             }
         });
-//        gotoResultButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                }
-//            }
-//        });
         retryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getPredictionsFromServer();
                 messageTextView.setText("Select or click an Image");
                 messageTextView.setVisibility(View.VISIBLE);
-                trialImageTextInputLayout.setVisibility(View.INVISIBLE);
-                trialImageTextInputText.setText("na");
                 retryButton.setVisibility(View.INVISIBLE);
+
+            }
+        });
+        okayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getPredictionsFromServer();
+                messageTextView.setText("Select or click an Image");
+                messageTextView.setVisibility(View.VISIBLE);
+                retryButton.setVisibility(View.INVISIBLE);
+
+                VTRClothImage.setVisibility(View.INVISIBLE);
+                VTRHumanImage.setVisibility(View.INVISIBLE);
+                VTRFinalImage.setVisibility(View.INVISIBLE);
+
+                okayButton.setVisibility(View.INVISIBLE);
 
             }
         });
 
         return view;
+    }
+
+    public Bitmap getPhotoUser(){
+        return photo_user[0];
     }
 
 }

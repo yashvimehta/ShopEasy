@@ -72,14 +72,14 @@
         app:layout_constraintTop_toBottomOf="@+id/barcodeTextInputLayout" />
 
     <Button
-        android:id="@+id/barcodeGotoResultButton"
+        android:id="@+id/barcodeOkayButton"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginStart="50dp"
         android:layout_marginEnd="50dp"
         android:layout_marginBottom="16dp"
         android:background="@drawable/custom_button"
-        android:text="Finalise"
+        android:text="Okay"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         android:visibility="invisible"
@@ -89,7 +89,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/messageTextView"
+        android:id="@+id/barcodeMessageTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -106,7 +106,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="44dp"
         android:layout_marginEnd="32dp"
         android:gravity="center_horizontal"
         android:text="Make sure that the barcode is clearly visible"
@@ -117,6 +117,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <TextView
+        android:id="@+id/barcodeFragmentName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:gravity="center_horizontal"
+        android:text="Barcode"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/barcodeTextInputLayout"
@@ -142,7 +159,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@null"
-            android:hint="Member ID"
             android:paddingLeft="5dp"
             android:paddingTop="5dp"
             android:paddingRight="5dp"

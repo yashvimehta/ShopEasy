@@ -53,23 +53,19 @@ public class RecommendationFragment extends Fragment {
     private static final int STORAGE_REQUEST = 7;
     private static final int SELECT_FILE = 8;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
-    public static final int URL_SAFE=8;
     public static final int DEFAULT=0;
 
 
     Bitmap bitmap;
     Bitmap bitmap2;
-    ImageView imageView;
-    TextView messageTextView;
-    Button retryButton, gotoResultButton;
+    ImageView imageView, recommendedImage1, recommendedImage2, recommendedImage3, recommendedImage4, recommendedImage5, camera, gallery;
+    TextView messageTextView, instructionsRecommendationTextView;
+    Button retryButton, okayButton;
     Uri currentImageUri;
 
-    TextInputLayout trialImageTextInputLayout;
-    EditText trialImageTextInputText;
 
     FirebaseAuth firebaseAuth;
 
-    final String[] issueDuration = new String[1];
 
     @SuppressLint("StaticFieldLeak")
     static ProgressBar progressBar;
@@ -128,29 +124,6 @@ public class RecommendationFragment extends Fragment {
         messageTextView.setVisibility(View.INVISIBLE);
 
         try {
-            final Bitmap[] photo_user = new Bitmap[1];
-//            FirebaseUser user = firebaseAuth.getCurrentUser();
-//            FirebaseFirestore db = FirebaseFirestore.getInstance();
-//            db.collection("users")
-//                    .get()
-//                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                        @Override
-//                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                            if (task.isSuccessful()) {
-//                                for (QueryDocumentSnapshot document : task.getResult()) {
-//                                    String uuid = String.valueOf(document.getData().get("uuid"));
-//                                    if(uuid.equals(user.getUid())){
-//                                        photo_user[0] = Bitmap.createBitmap((Bitmap) document.getData().get("image"));
-//                                        break;
-//                                    }
-//                                }
-//                            } else {
-//                                Log.d(TAG, "Error getting documents: ", task.getException());
-//                            }
-//                        }
-//                    });
-
-
             Bitmap photo = MediaStore.Images.Media.getBitmap(HomePage.contextOfApplication.getContentResolver(), currentImageUri);
             imageView.setImageBitmap(photo);
 
@@ -181,41 +154,55 @@ public class RecommendationFragment extends Fragment {
                     if (mResult.getGeneralSuccess()) {
                         Log.i("Success Checking", mResult.getVTRText().toString() +"");
 
-                        String s = mResult.getVTRText().get(4);
+                        byte [] encodeByte1 = Base64.decode(mResult.getVTRText().get(0),DEFAULT);
+                        Bitmap bitmap1 = BitmapFactory.decodeByteArray(encodeByte1, 0, encodeByte1.length);
 
-                        byte [] encodeByte = Base64.decode(s,DEFAULT);
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+                        byte [] encodeByte2 = Base64.decode(mResult.getVTRText().get(1),DEFAULT);
+                        Bitmap bitmap2 = BitmapFactory.decodeByteArray(encodeByte2, 0, encodeByte2.length);
 
+                        byte [] encodeByte3 = Base64.decode(mResult.getVTRText().get(2),DEFAULT);
+                        Bitmap bitmap3 = BitmapFactory.decodeByteArray(encodeByte3, 0, encodeByte3.length);
 
-//                        byte[] decodedString = new byte[0];
-//                        Log.i("apple1", "");
-//                        String base64Image = mResult.getVTRText().get(0).split(",")[1];
-//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//                            Log.i("apple2", "");
-////                            decodedString = android.util.Base64.getDecoder(tmp, URL_SAFE);
-//                            Log.i("apple3", "");
-//                        }
-//                        Log.i("apple4", "");
-//                        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-//                        Log.i("apple5", "");
+                        byte [] encodeByte4 = Base64.decode(mResult.getVTRText().get(3),DEFAULT);
+                        Bitmap bitmap4 = BitmapFactory.decodeByteArray(encodeByte4, 0, encodeByte4.length);
 
-                        imageView.setImageBitmap(bitmap);
+                        byte [] encodeByte5 = Base64.decode(mResult.getVTRText().get(4),DEFAULT);
+                        Bitmap bitmap5 = BitmapFactory.decodeByteArray(encodeByte5, 0, encodeByte5.length);
 
+                        recommendedImage1.setImageBitmap(bitmap1);
+                        recommendedImage1.setVisibility(View.VISIBLE);
+
+                        recommendedImage2.setImageBitmap(bitmap2);
+                        recommendedImage2.setVisibility(View.VISIBLE);
+
+                        recommendedImage3.setImageBitmap(bitmap3);
+                        recommendedImage3.setVisibility(View.VISIBLE);
+
+                        recommendedImage4.setImageBitmap(bitmap4);
+                        recommendedImage4.setVisibility(View.VISIBLE);
+
+                        recommendedImage5.setImageBitmap(bitmap5);
+                        recommendedImage5.setVisibility(View.VISIBLE);
+
+                        instructionsRecommendationTextView.setVisibility(View.INVISIBLE);
+                        okayButton.setVisibility(View.VISIBLE);
 
                         messageTextView.setVisibility(View.INVISIBLE);
-                        trialImageTextInputText.setText(mResult.getVTRText().toString());
-                        trialImageTextInputLayout.setVisibility(View.VISIBLE);
 
-                        gotoResultButton.setVisibility(View.VISIBLE);
                         retryButton.setVisibility(View.INVISIBLE);
+                        imageView.setVisibility(View.INVISIBLE);
+
+                        camera.setVisibility(View.INVISIBLE);
+
+                        gallery.setVisibility(View.INVISIBLE);
+
 
 
                     } else {
                         String text = "Failure";
                         messageTextView.setText(text);
                         messageTextView.setVisibility(View.VISIBLE);
-                        trialImageTextInputLayout.setVisibility(View.INVISIBLE);
-                        trialImageTextInputText.setText("na");
+                        retryButton.setVisibility(View.VISIBLE);
                         Log.i("Success Checking", mResult.getVTRError()+"");
 
                     }
@@ -237,8 +224,6 @@ public class RecommendationFragment extends Fragment {
                     String text = "There was some error";
                     messageTextView.setText(text);
                     messageTextView.setVisibility(View.VISIBLE);
-                    trialImageTextInputLayout.setVisibility(View.INVISIBLE);
-                    trialImageTextInputText.setText("na");
                     progressBar.setVisibility(View.INVISIBLE);
 
                     retryButton.setVisibility(View.VISIBLE);
@@ -271,42 +256,6 @@ public class RecommendationFragment extends Fragment {
         Uri imageLocation = data.getData();
         currentImageUri=imageLocation;
         getPredictionsFromServer();
-
-        // Image using camera
-//        if (requestCode == CAMERA_REQUEST && resultCode == Activity.RESULT_OK) {
-//            Log.i("12345",data.getExtras().toString());
-//            Bitmap photo = (Bitmap) data.getExtras().get("data");
-//
-//            Uri tempUri = saveBitmapImage(getContext(), photo);
-//            CropImage.activity(tempUri)
-//                    .setGuidelines(CropImageView.Guidelines.ON)
-//                    .setCropShape(CropImageView.CropShape.RECTANGLE)
-//                    .start(getContext(), this);
-//        }
-//
-//        // Image from gallery
-//        if (requestCode == SELECT_FILE && resultCode == Activity.RESULT_OK) {
-//            Uri imageLocation = data.getData();
-////            currentImageUri=imageLocation;
-////            getPredictionsFromServer();
-//            CropImage.activity(imageLocation)
-//                    .setGuidelines(CropImageView.Guidelines.ON)
-//                    .setCropShape(CropImageView.CropShape.RECTANGLE)
-//                    .start(getContext(), this);
-//
-//            Log.i("WILL", "will call cropper");
-//        }
-//
-//        // Image cropper
-//        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK && data != null) {
-//
-//            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-//            currentImageUri = result.getUri();
-//            Log.i("IMG CROPPER", "In cropper");
-//
-//            getPredictionsFromServer();
-//
-//        }
     }
 
 
@@ -317,43 +266,33 @@ public class RecommendationFragment extends Fragment {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         firebaseAuth = FirebaseAuth.getInstance();
 
-//        //get issue duration
-//        DocumentReference rulesDocumentRef = db.collection("Rules").document("ruless");
-//        rulesDocumentRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                if (task.isSuccessful()) {
-//                    issueDuration[0] = String.valueOf(task.getResult().getData().get("issueDuration(days)"));
-//                }
-//            }
-//        });
-//
-//        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-//
-//        assert mUser != null;
-//        DocumentReference mDocumentReference = db.collection("Users").document(mUser.getUid());
 
-        View view = inflater.inflate(R.layout.fragment_v_t_r, container, false);
-        messageTextView = view.findViewById(R.id.messageTextView);
+        View view = inflater.inflate(R.layout.fragment_recommendation, container, false);
 
-        retryButton = view.findViewById(R.id.buttonDetect);
-        gotoResultButton = view.findViewById(R.id.VTRgotoResultButton);
-        progressBar = view.findViewById(R.id.progressBar);
+        messageTextView = view.findViewById(R.id.recommendationMessageTextView);
+
+        retryButton = view.findViewById(R.id.recommendationRetryButton);
+        progressBar = view.findViewById(R.id.recommendationProgressBar);
         progressBar.setVisibility(View.INVISIBLE);
 
-        trialImageTextInputLayout = view.findViewById(R.id.trialImageTextInputLayout);
-        trialImageTextInputText = view.findViewById(R.id.trialImageTextInputText);
+        imageView = view.findViewById(R.id.recommendationImageViewSelectImage);
 
+        instructionsRecommendationTextView = view.findViewById(R.id.instructionsRecommendationTextView);
 
-        imageView = view.findViewById(R.id.imageViewSelectImage);
+        okayButton = view.findViewById(R.id.recommendationOkay);
 
-        ImageView camera = view.findViewById(R.id.imageViewCamera);
+        recommendedImage1 = view.findViewById(R.id.recommendedImage1);
+        recommendedImage2 = view.findViewById(R.id.recommendedImage2);
+        recommendedImage3 = view.findViewById(R.id.recommendedImage3);
+        recommendedImage4 = view.findViewById(R.id.recommendedImage4);
+        recommendedImage5 = view.findViewById(R.id.recommendedImage5);
+
+        camera = view.findViewById(R.id.recommendationImageViewCamera);
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 retryButton.setVisibility(View.INVISIBLE);
 
-                gotoResultButton.setVisibility(View.INVISIBLE);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (HomePage.contextOfApplication.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -367,13 +306,11 @@ public class RecommendationFragment extends Fragment {
             }
         });
 
-        ImageView gallery = view.findViewById(R.id.imageViewGallery);
+        gallery = view.findViewById(R.id.recommendationImageViewGallery);
         gallery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 retryButton.setVisibility(View.INVISIBLE);
-
-                gotoResultButton.setVisibility(View.INVISIBLE);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (HomePage.contextOfApplication.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -387,21 +324,32 @@ public class RecommendationFragment extends Fragment {
 
             }
         });
-//        gotoResultButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                }
-//            }
-//        });
         retryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getPredictionsFromServer();
                 messageTextView.setText("Select or click an Image");
                 messageTextView.setVisibility(View.VISIBLE);
-                trialImageTextInputLayout.setVisibility(View.INVISIBLE);
-                trialImageTextInputText.setText("na");
                 retryButton.setVisibility(View.INVISIBLE);
+
+            }
+        });
+
+        okayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                messageTextView.setVisibility(View.VISIBLE);
+                retryButton.setVisibility(View.INVISIBLE);
+                okayButton.setVisibility(View.INVISIBLE);
+                imageView.setVisibility(View.INVISIBLE);
+                camera.setVisibility(View.VISIBLE);
+                gallery.setVisibility(View.VISIBLE);
+                recommendedImage1.setVisibility(View.INVISIBLE);
+                recommendedImage2.setVisibility(View.INVISIBLE);
+                recommendedImage3.setVisibility(View.INVISIBLE);
+                recommendedImage4.setVisibility(View.INVISIBLE);
+                recommendedImage5.setVisibility(View.INVISIBLE);
+                instructionsRecommendationTextView.setVisibility(View.VISIBLE);
 
             }
         });
