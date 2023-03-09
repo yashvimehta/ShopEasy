@@ -73,6 +73,8 @@ public class VTRFragment extends Fragment {
 
     private StorageReference storage;
 
+    String file_cloth_name, file_human_name;
+
     final Bitmap[] photo_user = new Bitmap[1];
     Bitmap bitmap;
     FirebaseUser user;
@@ -129,11 +131,7 @@ public class VTRFragment extends Fragment {
             if (cursor != null) {
                 cursor.moveToFirst();
                 int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-
-                int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                Log.i("polll", cursor.getString(nameIndex));
                 path = cursor.getString(idx);
-                Log.i("abc", path);
                 cursor.close();
             }
         }
@@ -172,8 +170,8 @@ public class VTRFragment extends Fragment {
                     .build();
             RequestBody requestFile_cloth = RequestBody.create(MediaType.parse("multipart/form-data"), file_cloth);
             RequestBody requestFile_user = RequestBody.create(MediaType.parse("multipart/form-data"), file_user);
-            MultipartBody.Part body_cloth = MultipartBody.Part.createFormData("img2", "001502_1.jpg", requestFile_cloth);
-            MultipartBody.Part body_user = MultipartBody.Part.createFormData("img1", "001858_0.jpg", requestFile_user);
+            MultipartBody.Part body_cloth = MultipartBody.Part.createFormData("img2", file_cloth_name, requestFile_cloth);
+            MultipartBody.Part body_user = MultipartBody.Part.createFormData("img1", file_human_name, requestFile_user);
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(ApiInterface.BASE_URL_PREDICTOR)
                     .addConverterFactory(GsonConverterFactory.create())
@@ -282,6 +280,7 @@ public class VTRFragment extends Fragment {
             int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
 
             int nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+            file_cloth_name = cursor.getString(nameIndex);
             Log.i("frrrr", cursor.getString(nameIndex));
             cursor.close();
         }
@@ -318,45 +317,26 @@ public class VTRFragment extends Fragment {
 
         imageView = view.findViewById(R.id.VTRimageViewSelectImage);
 
-
-        storage = FirebaseStorage.getInstance().getReference().child("user_images/001858_0.jpg");
-
-        try{
-            final File localFile= File.createTempFile("001858_0","jpg" );
-            storage.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    photo_user[0] = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                    Log.i(photo_user[0].toString(), "poi");
-
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    e.printStackTrace();
-
-                    Log.i("errrorr", e.toString()+"");
-
-                    String text = "There was some error";
-                    messageTextView.setText(text);
-                    messageTextView.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.INVISIBLE);
-
-                    retryButton.setVisibility(View.VISIBLE);
-                }
-            });
-        } catch(Exception e){
-            e.printStackTrace();
-            Log.i("errrorr", e.toString()+"");
-
-            String text = "There was some error";
-            messageTextView.setText(text);
-            messageTextView.setVisibility(View.VISIBLE);
-            progressBar.setVisibility(View.INVISIBLE);
-
-            retryButton.setVisibility(View.VISIBLE);
-        }
-
+        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+        db.collection("users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String uuid = String.valueOf(document.getData().get("uuid"));
+                                if(uuid.equals(mUser.getUid())){  //if ISBN exists
+                                    file_human_name = (String) document.getData().get("image");
+                                    Log.i("orange", file_human_name);
+                                    getBitmapImageHuman(file_human_name);
+                                }
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
 
 
         camera = view.findViewById(R.id.VTRImageViewCamera);
@@ -412,7 +392,6 @@ public class VTRFragment extends Fragment {
         okayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getPredictionsFromServer();
                 messageTextView.setText("Select or click an Image");
                 messageTextView.setVisibility(View.VISIBLE);
                 retryButton.setVisibility(View.INVISIBLE);
@@ -420,6 +399,11 @@ public class VTRFragment extends Fragment {
                 VTRClothImage.setVisibility(View.INVISIBLE);
                 VTRHumanImage.setVisibility(View.INVISIBLE);
                 VTRFinalImage.setVisibility(View.INVISIBLE);
+
+                instructionsVTRTextView.setVisibility(View.VISIBLE);
+                camera.setVisibility(View.VISIBLE);
+                gallery.setVisibility(View.VISIBLE);
+
 
                 okayButton.setVisibility(View.INVISIBLE);
 
@@ -431,6 +415,38 @@ public class VTRFragment extends Fragment {
 
     public Bitmap getPhotoUser(){
         return photo_user[0];
+    }
+
+    public void getBitmapImageHuman(String file_human_name){
+        try{
+            storage = FirebaseStorage.getInstance().getReference().child("user_images/" + file_human_name);
+            String[] str = file_human_name.split("[.]", 0);
+            Log.i("orange1", str[0]);
+            Log.i("orange2", str[1]);
+            final File localFile= File.createTempFile(str[0],str[1] );
+            storage.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    photo_user[0] = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                    Log.i(photo_user[0].toString(), "poi");
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    e.printStackTrace();
+
+                    Log.i("errrorr", e.toString()+"");
+
+                    String text = "There was some error";
+                }
+            });
+        } catch(Exception e){
+            e.printStackTrace();
+            Log.i("errrorr", e.toString()+"");
+
+            String text = "There was some error";
+        }
     }
 
 }
