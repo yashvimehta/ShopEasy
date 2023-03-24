@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Quickbook</string>
+    <string name="app_name">ShopEasy</string>
     <string name="title_activity_edit_profile">Edit_Profile</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
