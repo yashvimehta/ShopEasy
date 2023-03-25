@@ -24,8 +24,11 @@ public class ShoppingFragmentAdapter extends FragmentPagerAdapter {
         else if (position == 1) {
             return new BarcodeFragment();
         }
-        else if (position == 1) {
+        else if (position == 2) {
             return new RecommendationFragment();
+        }
+        else if(position == 3){
+            return new EditProfileFragment();
         }
         else{
             return new SearchPageFragment();
@@ -35,7 +38,7 @@ public class ShoppingFragmentAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount()
     {
-        return 4;
+        return 5;
     }
 };
 
