@@ -64,7 +64,7 @@ public class EditProfileFragment extends Fragment {
 
     FirebaseFirestore db;
 
-    String flie_name;
+    String flie_name, old_image_name;
 
     Uri currentImageUri;
 
@@ -178,7 +178,20 @@ public class EditProfileFragment extends Fragment {
                                     for (QueryDocumentSnapshot document : task.getResult()) {
                                         String uuid = String.valueOf(document.getData().get("uuid"));
                                         if(user.getUid().equals(uuid)){
+                                            old_image_name = String.valueOf(document.getData().get("image"));
                                             db.collection("users").document(document.getId()).update("image", flie_name);
+                                            StorageReference desertRef = storageRef.child("user_images/"+old_image_name);
+                                            desertRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.i("YAY", "Delete successful");
+                                                }
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception exception) {
+                                                    Log.i("NAY", "Delete unsuccessful");
+                                                }
+                                            });
                                         }
                                     }
                                 } else {
@@ -188,9 +201,7 @@ public class EditProfileFragment extends Fragment {
                         });
 
                 storageRef = storage.getReference();
-
                 StorageReference imageRef = storageRef.child("user_images/"+flie_name);
-
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] data = baos.toByteArray();
@@ -199,16 +210,14 @@ public class EditProfileFragment extends Fragment {
                 uploadTask.addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
-                        // Handle unsuccessful uploads
                     }
                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                        // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
-                        // ...
                     }
                 });
+
+                // Delete the file
 
             }
         });
@@ -257,7 +266,23 @@ public class EditProfileFragment extends Fragment {
                                 }
                             });
 
-                    db.collection("Users").document(user.getUid()).update("password", pwd);
+                    db.collection("users")
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            String uuid = String.valueOf(document.getData().get("uuid"));
+                                            if(user.getUid().equals(uuid)){
+                                                db.collection("users").document(document.getId()).update("password", pwd);
+                                            }
+                                        }
+                                    } else {
+                                        Log.d(TAG, "Error getting documents: ", task.getException());
+                                    }
+                                }
+                            });
                     Toast.makeText(getActivity(), "Changes stored successfully", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
