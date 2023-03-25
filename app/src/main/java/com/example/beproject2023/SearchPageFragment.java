@@ -39,6 +39,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -86,9 +87,6 @@ public class SearchPageFragment extends Fragment {
                 }
                 else {
                     try {
-
-                        String[] words=clothNameEditText.toString().split(" ");
-
                         db.collection("clothes")
                                 .get()
                                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -100,11 +98,16 @@ public class SearchPageFragment extends Fragment {
                                             for (QueryDocumentSnapshot document : task.getResult()) {
                                                 String color = String.valueOf(document.getData().get("color"));
                                                 String pattern = String.valueOf(document.getData().get("pattern"));
-                                                if(color.equals(words[0].toLowerCase()) && pattern.equals(words[1].toLowerCase())){
+                                                Log.i("Color", color);
+                                                Log.i("Pattern", pattern);
+                                                String clothSearch  = searchName.toLowerCase();
+                                                Log.i("Cloth Search", clothSearch);
+                                                if(clothSearch.contains(color) && clothSearch.contains(pattern)){
                                                     val++;
                                                     String price = String.valueOf(document.getData().get("price"));
                                                     String size = String.valueOf(document.getData().get("size"));
-                                                    String[] arrayListFeeder=new String[]{color, pattern, price, size};
+                                                    String image_name = String.valueOf(document.getData().get("image_name"));
+                                                    String[] arrayListFeeder=new String[]{color, pattern, price, size, image_name};
                                                     stringArrayList.add(arrayListFeeder);
                                                 }
                                             }
