@@ -5,12 +5,15 @@ import static android.content.ContentValues.TAG;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,9 +22,10 @@ import androidx.annotation.Nullable;
 
 //import com.bumptech.glide.Glide;
 //import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.example.quickbook.MainActivity;
-import com.example.quickbook.R;
+import com.example.beproject2023.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
@@ -29,14 +33,18 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.razorpay.Checkout;
-import com.razorpay.PaymentResultListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+//import com.razorpay.Checkout;
+//import com.razorpay.PaymentResultListener;
 //import com.google.firebase.storage.FirebaseStorage;
 //import com.google.firebase.storage.StorageReference;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -50,6 +58,9 @@ public class UserCustomCardAdapter extends ArrayAdapter<String[]> {
     ArrayList<String[]>mArrayList;
     Button buyNow;
     FirebaseFirestore db;
+    ImageView imageViewCart;
+    TextView clothName, clothDesc;
+    StorageReference storage;
     public static String rzpID;
     public static Button rzpButton;
     public UserCustomCardAdapter(@NonNull Context context, ArrayList<String[]> stringArrayList) {
@@ -65,11 +76,34 @@ public class UserCustomCardAdapter extends ArrayAdapter<String[]> {
         LayoutInflater mLayoutInflater = LayoutInflater.from(this.getContext());
         @SuppressLint("ViewHolder") View view = mLayoutInflater.inflate(R.layout.content_user_custom_card_adapter, null, true);
 
-        TextView clothName = view.findViewById(R.id.clothName);
-        TextView clothDesc = view.findViewById(R.id.clothDesc);
+        clothName = view.findViewById(R.id.clothName);
+        clothDesc = view.findViewById(R.id.clothDesc);
+        imageViewCart = view.findViewById(R.id.imageViewCart);
 
         clothName.setText(mArrayList.get(position)[0] + " " + mArrayList.get(position)[1]);
         clothDesc.setText("Price: "+mArrayList.get(position)[2] + "\tSize: "+ mArrayList.get(position)[3] );
+
+        try{
+            storage = FirebaseStorage.getInstance().getReference().child("cloth_images/" + mArrayList.get(position)[4]);
+            String[] str = mArrayList.get(position)[4].split("[.]", 0);
+            final File localFile= File.createTempFile(str[0],str[1] );
+            storage.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                    imageViewCart.setImageBitmap(BitmapFactory.decodeFile(localFile.getAbsolutePath()));
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    e.printStackTrace();
+                    Log.i("errrorr", e.toString()+"");
+                    String text = "There was some error";
+                }
+            });
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
 
         buyNow = view.findViewById(R.id.buyNow);
 

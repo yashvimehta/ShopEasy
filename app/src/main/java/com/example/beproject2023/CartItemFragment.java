@@ -4,6 +4,7 @@ import static android.content.ContentValues.TAG;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,9 +18,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.quickbook.FragmentSetAdmin.CustomCardAdapter;
-import com.example.quickbook.R;
+import com.example.beproject2023.UserCustomCardAdapter;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,7 +31,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -40,6 +46,7 @@ public class CartItemFragment extends Fragment {
     FirebaseFirestore db;
     FirebaseAuth firebaseAuth;
     ListView mListView;
+    StorageReference storage;
     UserCustomCardAdapter mUserCustomCardAdapter;
     final String[] memberid = new String[1];
     final String[] vall = new String[2];
@@ -88,7 +95,13 @@ public class CartItemFragment extends Fragment {
                                                                     String color = String.valueOf(document.getData().get("color"));
                                                                     String pattern = String.valueOf(document.getData().get("pattern"));
                                                                     String price = String.valueOf(document.getData().get("price"));
-                                                                    inStockInputText.setText(inStock);
+                                                                    String image_name = String.valueOf(document.getData().get("image_name"));
+                                                                    String[] arrayListFeeder=new String[]{StringFormatter.capitalizeWord(color), StringFormatter.capitalizeWord(pattern), price, size, image_name, barcode};
+                                                                    stringArrayList.add(arrayListFeeder);
+                                                                    mUserCustomCardAdapter = new UserCustomCardAdapter(requireContext(), stringArrayList);
+                                                                    mListView.setAdapter(mUserCustomCardAdapter);
+                                                                    mListView.setVisibility(View.VISIBLE);
+
                                                                 }
                                                             }
                                                         } else {
@@ -96,34 +109,9 @@ public class CartItemFragment extends Fragment {
                                                         }
                                                     }
                                                 });
-
-                                        val++;
-                                        String price = String.valueOf(document.getData().get("price"));
-                                        String size = String.valueOf(document.getData().get("size"));
-                                        String image_name = String.valueOf(document.getData().get("image_name"));
-                                        String barcode = String.valueOf(document.getData().get("barcode"));
-                                        String[] arrayListFeeder=new String[]{StringFormatter.capitalizeWord(color), StringFormatter.capitalizeWord(pattern), price, size, image_name, barcode};
-                                        stringArrayList.add(arrayListFeeder);
                                     }
-                                }
-                                if (val == 0) {
-                                    Toast.makeText(getContext(), "No apparel found", Toast.LENGTH_SHORT).show();
                                 }
                                 Log.i("Length",String.valueOf(stringArrayList.size()));
-                                mCustomCardAdapter = new SearchCardAdapter(requireContext(), stringArrayList);
-                                clothListView.setAdapter(mCustomCardAdapter);
-                                clothListView.setVisibility(View.VISIBLE);
-                                clothListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                                    @Override
-                                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                        Log.i("success", "Clicked on:" + stringArrayList.get(i)[0]);
-                                        Intent intent = new Intent(getActivity().getApplication(), ClothInfo.class);
-                                        intent.putExtra("clothData", stringArrayList.get(i));
-                                        startActivity(intent);
-
-
-                                    }
-                                });
                             } else {
                                 Log.d(TAG, "Error getting documents: ", task.getException());
                             }

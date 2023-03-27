@@ -19,7 +19,7 @@ public class ShoppingFragmentAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position)
     {
         if (position==0){
-            return new VTRFragment();
+            return new CartItemFragment();
         }
         else if (position == 1) {
             return new SearchPageFragment();
