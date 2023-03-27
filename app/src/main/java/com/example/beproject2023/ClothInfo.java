@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -62,7 +63,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ClothInfo extends AppCompatActivity {
     private static Context contextOfApplication;
     TextView titleTextView;
-    ImageView thumbnailImageView;
+    ImageView thumbnailImageView, recommendImageView1, recommendImageView2, recommendImageView3, recommendImageView4, recommendImageView5;
     TextView colorTextView, sizeTextView , patternTextView , priceTextView;
     EditText inStockInputText;
     Button saveCopiesButton, VTRButton, addToCartButton;
@@ -78,6 +79,7 @@ public class ClothInfo extends AppCompatActivity {
 
     public static final int DEFAULT=0;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +87,12 @@ public class ClothInfo extends AppCompatActivity {
 
         VTRButton = findViewById(R.id.VTRButton);
         addToCartButton = findViewById(R.id.addToCartButton);
+
+        recommendImageView1 = findViewById(R.id.recommendImageView1);
+        recommendImageView2 = findViewById(R.id.recommendImageView2);
+        recommendImageView3 = findViewById(R.id.recommendImageView3);
+        recommendImageView4 = findViewById(R.id.recommendImageView4);
+        recommendImageView5 = findViewById(R.id.recommendImageView5);
 
         db = FirebaseFirestore.getInstance();
 

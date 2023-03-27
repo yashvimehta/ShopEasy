@@ -58,7 +58,6 @@ public class UserCustomCardAdapter extends ArrayAdapter<String[]> {
     ArrayList<String[]>mArrayList;
     Button buyNow;
     FirebaseFirestore db;
-    ImageView imageViewCart;
     TextView clothName, clothDesc;
     StorageReference storage;
     public static String rzpID;
@@ -78,7 +77,7 @@ public class UserCustomCardAdapter extends ArrayAdapter<String[]> {
 
         clothName = view.findViewById(R.id.clothName);
         clothDesc = view.findViewById(R.id.clothDesc);
-        imageViewCart = view.findViewById(R.id.imageViewCart);
+        final ImageView imageViewCart = view.findViewById(R.id.imageViewCart);
 
         clothName.setText(mArrayList.get(position)[0] + " " + mArrayList.get(position)[1]);
         clothDesc.setText("Price: "+mArrayList.get(position)[2] + "\tSize: "+ mArrayList.get(position)[3] );

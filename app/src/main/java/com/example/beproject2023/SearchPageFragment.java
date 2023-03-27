@@ -102,7 +102,7 @@ public class SearchPageFragment extends Fragment {
                                                 Log.i("Pattern", pattern);
                                                 String clothSearch  = searchName.toLowerCase();
                                                 Log.i("Cloth Search", clothSearch);
-                                                if(clothSearch.contains(color) && clothSearch.contains(pattern)){
+                                                if(clothSearch.contains(color) || clothSearch.contains(pattern)){
                                                     val++;
                                                     String price = String.valueOf(document.getData().get("price"));
                                                     String size = String.valueOf(document.getData().get("size"));
