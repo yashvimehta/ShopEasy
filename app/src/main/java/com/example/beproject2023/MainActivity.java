@@ -38,10 +38,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void launchHomeActivity() {
-//        Intent intent = new Intent(MainActivity.this, AdminHomePage.class);
+        Intent intent = new Intent(MainActivity.this, HomePage.class);
 
-//        startActivity(intent);
-//        finish();
+        startActivity(intent);
+        finish();
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +54,10 @@ public class MainActivity extends AppCompatActivity {
 
         editTextEmail = findViewById(R.id.editTextLogInEmailAddress);
         editTextPasswordLogin = findViewById(R.id.editTextLogInPassword);
+
+        if (firebaseAuth.getCurrentUser() != null) {
+            launchHomeActivity();
+        }
 
 
     }

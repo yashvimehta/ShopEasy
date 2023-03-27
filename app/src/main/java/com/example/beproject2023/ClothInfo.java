@@ -61,8 +61,8 @@ public class ClothInfo extends AppCompatActivity {
         titleTextView.setText(clothData[0] + " " + clothData[1]);
 
         Spinner dropdown = findViewById(R.id.spinner);
-        String[] items = clothData[3].split("");
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
+        String[] items = clothData[3].split( " ");
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, items);
         dropdown.setAdapter(adapter);
 
         thumbnailImageView = findViewById(R.id.thumbnailImageView);

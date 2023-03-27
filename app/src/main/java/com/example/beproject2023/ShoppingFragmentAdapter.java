@@ -22,7 +22,7 @@ public class ShoppingFragmentAdapter extends FragmentPagerAdapter {
             return new VTRFragment();
         }
         else if (position == 1) {
-            return new BarcodeFragment();
+            return new SearchPageFragment();
         }
         else if (position == 2) {
             return new RecommendationFragment();
@@ -31,7 +31,7 @@ public class ShoppingFragmentAdapter extends FragmentPagerAdapter {
             return new EditProfileFragment();
         }
         else{
-            return new SearchPageFragment();
+            return new BarcodeFragment();
         }
     }
 

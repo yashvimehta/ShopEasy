@@ -42,6 +42,7 @@
                         android:paddingRight="5dp"
                         android:paddingBottom="5dp"
                         android:text="loading..."
+                        android:textColor="#FFFFFF"
                         tools:ignore="TouchTargetSizeCheck" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -81,6 +82,7 @@
                     android:layout_width="166dp"
                     android:layout_height="142dp"
                     android:layout_marginTop="16dp"
+                    android:background="@null"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/titleTextView"
@@ -146,7 +148,7 @@
             android:layout_width="146dp"
             android:layout_height="52dp"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="162dp"
+            android:layout_marginTop="130dp"
             android:background="@drawable/custom_button"
             android:text="Try on Virtually"
             android:textColor="#FFFFFF"
@@ -158,7 +160,7 @@
             android:layout_width="152dp"
             android:layout_height="53dp"
             android:layout_marginStart="232dp"
-            android:layout_marginTop="160dp"
+            android:layout_marginTop="130dp"
             android:background="@drawable/custom_button"
             android:text="Add to Cart"
             android:textColor="#FFFFFF"
@@ -169,10 +171,23 @@
             android:id="@+id/spinner"
             android:layout_width="368dp"
             android:layout_height="33dp"
-            android:layout_marginStart="22dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="43dp"
-            android:layout_marginEnd="22dp"
+            android:layout_marginEnd="16dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/priceTextView" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="22dp"
+            android:layout_marginTop="17dp"
+            android:text="Choose a size for you"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/priceTextView" />
 
