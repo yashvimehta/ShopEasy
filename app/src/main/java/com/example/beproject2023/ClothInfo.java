@@ -5,10 +5,16 @@ import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Html;
-import android.text.InputType;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,12 +23,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.beproject2023.ApiHelper.ApiInterface;
+import com.example.beproject2023.ApiHelper.VTRResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -33,24 +42,48 @@ import com.google.firebase.storage.StorageReference;
 import static com.example.beproject2023.MainActivity.isAdmin;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ClothInfo extends AppCompatActivity {
+    private static Context contextOfApplication;
     TextView titleTextView;
     ImageView thumbnailImageView;
     TextView colorTextView, sizeTextView , patternTextView , priceTextView;
     EditText inStockInputText;
-    Button saveCopiesButton;
+    Button saveCopiesButton, VTRButton;
+
+    Bitmap photo_cloth, photo_user;
 
     StorageReference storage;
+
+    FirebaseFirestore db;
+
+    String user_image_name;
+
+    public static final int DEFAULT=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cloth_info);
 
+        VTRButton = findViewById(R.id.VTRButton);
+
+        db = FirebaseFirestore.getInstance();
 
         String [] clothData=null;
         Bundle extras = getIntent().getExtras();
@@ -73,7 +106,8 @@ public class ClothInfo extends AppCompatActivity {
             storage.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                    thumbnailImageView.setImageBitmap(BitmapFactory.decodeFile(localFile.getAbsolutePath()));
+                    photo_cloth = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                    thumbnailImageView.setImageBitmap(photo_cloth);
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -101,6 +135,46 @@ public class ClothInfo extends AppCompatActivity {
         priceTextView.setText(Html.fromHtml("<b>" + "Color:"+"</b> " + clothData[2]));
 
 
+        //get user image
+        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+        db.collection("users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        int val = 0;
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String uuid = String.valueOf(document.getData().get("uuid"));
+                                if(uuid.equals(mUser.getUid())){
+                                    user_image_name = String.valueOf(document.getData().get("image"));
+                                    try{
+                                        storage = FirebaseStorage.getInstance().getReference().child("user_images/" + user_image_name);
+                                        String[] str = user_image_name.split("[.]", 0);
+                                        final File localFile= File.createTempFile(str[0],str[1] );
+                                        storage.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                            @Override
+                                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                                photo_user = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.i("errrorr", e.toString()+"");
+                                            }
+                                        });
+                                    }
+                                    catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
 
 //        publishTextView=findViewById(R.id.patternTextView);
 //        String publishText="";
@@ -119,7 +193,6 @@ public class ClothInfo extends AppCompatActivity {
         inStockInputText=findViewById(R.id.inStockInputText);
 
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
         String[] finalClothData = clothData;
         db.collection("clothes")
                 .get()
@@ -186,6 +259,15 @@ public class ClothInfo extends AppCompatActivity {
 //            saveCopiesButton.setVisibility(View.INVISIBLE);
 //            Log.i("success","is not admin");
         }
+
+        String[] finalClothData1 = clothData;
+        String[] finalClothData2 = clothData;
+        VTRButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getPredictionsFromServer(finalClothData1[4], finalClothData2);
+            }
+        });
     }
 
     @Override
@@ -200,5 +282,110 @@ public class ClothInfo extends AppCompatActivity {
         mMap.put("ISBN", isbn);
         mMap.put("Copies", "0");
         db.collection("Books").add(mMap);
+    }
+
+    public void getPredictionsFromServer(String s,String[] clothData ) {
+
+        try {
+
+            Uri tempUri_cloth = saveBitmapImage(ClothInfo.contextOfApplication, photo_cloth);
+            Uri tempUri_user = saveBitmapImage(ClothInfo.contextOfApplication, photo_user);
+
+            Log.i("lol", tempUri_cloth.getPath());
+            Log.i("lol", tempUri_user.getPath());
+
+            String filePath_cloth = getFilePathFromUri(tempUri_cloth);
+            String filePath_user = getFilePathFromUri(tempUri_user);
+
+            final File file_cloth = new File(filePath_cloth);
+            final File file_user = new File(filePath_user);
+            final OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                    .readTimeout(60, TimeUnit.SECONDS)
+                    .connectTimeout(60, TimeUnit.SECONDS)
+                    .build();
+            RequestBody requestFile_cloth = RequestBody.create(MediaType.parse("multipart/form-data"), file_cloth);
+            RequestBody requestFile_user = RequestBody.create(MediaType.parse("multipart/form-data"), file_user);
+            MultipartBody.Part body_cloth = MultipartBody.Part.createFormData("img2", s, requestFile_cloth);
+            MultipartBody.Part body_user = MultipartBody.Part.createFormData("img1", user_image_name, requestFile_user);
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(ApiInterface.BASE_URL_PREDICTOR)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(okHttpClient)
+                    .build();
+
+            Log.i("fil1",file_cloth.getName() );
+            Log.i("fil2",file_user.getName() );
+            ApiInterface apiInterface = retrofit.create(ApiInterface.class);
+            Log.i("RN", "RN");
+            Call<VTRResult> mCall = apiInterface.sendVTRImage(body_user, body_cloth);
+            Log.i("RN", "RN");
+            mCall.enqueue(new Callback<VTRResult>() {
+                @Override
+                public void onResponse(Call<VTRResult> call, Response<VTRResult> response) {
+                    VTRResult mResult = response.body();
+                    if (mResult.getGeneralSuccess()) {
+                        Log.i("Success Checking", mResult.getVTRText() );
+
+                        byte [] encodeByte = Base64.decode(mResult.getVTRText(),DEFAULT);
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+                        Intent intent = new Intent(ClothInfo.this, VTR.class);
+                        intent.putExtra("VTRImage", bitmap);
+                        intent.putExtra("ClothData", clothData);
+                        startActivity(intent);
+
+                    } else {
+                        Log.i("Failure Checking", mResult.getVTRError()+" ");
+
+                    }
+                    if (file_cloth.exists()) {
+                        file_cloth.delete();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<VTRResult> call, Throwable t) {
+                    Log.i("Failure Checking", "There was an error " + t.getMessage());
+
+                    if (file_cloth.exists()) {
+                        file_cloth.delete();
+                    }
+
+                }
+            });
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            String text = "There was some error";
+        }
+
+    }
+
+    public Uri saveBitmapImage(Context inContext, Bitmap inImage) {
+        Log.i("SAVE", "saving image...");
+
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.PNG, 100, bytes);
+        Long tsLong = System.currentTimeMillis()/1000;
+        String ts = tsLong.toString();
+        String path = MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(), inImage, ts, null);
+        Log.i("lol5",path );
+        return Uri.parse(path);
+    }
+
+    public String getFilePathFromUri(Uri uri) {
+        String path = "";
+        if (getApplicationContext().getContentResolver() != null) {
+            Cursor cursor = getApplicationContext().getContentResolver().query(uri, null, null, null, null);
+            if (cursor != null) {
+                cursor.moveToFirst();
+                int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+                path = cursor.getString(idx);
+                cursor.close();
+            }
+        }
+
+        return path;
     }
 }
