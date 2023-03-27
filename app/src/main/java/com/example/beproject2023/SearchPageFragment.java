@@ -107,7 +107,8 @@ public class SearchPageFragment extends Fragment {
                                                     String price = String.valueOf(document.getData().get("price"));
                                                     String size = String.valueOf(document.getData().get("size"));
                                                     String image_name = String.valueOf(document.getData().get("image_name"));
-                                                    String[] arrayListFeeder=new String[]{StringFormatter.capitalizeWord(color), StringFormatter.capitalizeWord(pattern), price, size, image_name};
+                                                    String barcode = String.valueOf(document.getData().get("barcode"));
+                                                    String[] arrayListFeeder=new String[]{StringFormatter.capitalizeWord(color), StringFormatter.capitalizeWord(pattern), price, size, image_name, barcode};
                                                     stringArrayList.add(arrayListFeeder);
                                                 }
                                             }
@@ -123,7 +124,7 @@ public class SearchPageFragment extends Fragment {
                                                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                                     Log.i("success", "Clicked on:" + stringArrayList.get(i)[0]);
                                                     Intent intent = new Intent(getActivity().getApplication(), ClothInfo.class);
-                                                    intent.putExtra("bookData", stringArrayList.get(i));
+                                                    intent.putExtra("clothData", stringArrayList.get(i));
                                                     startActivity(intent);
 
 
