@@ -14,4 +14,5 @@
     <string name="title_activity_search_card_adapter">SearchCardAdapter</string>
     <string name="title_activity_cloth_info">ClothInfo</string>
     <string name="title_activity_vtr">VTR</string>
+    <string name="title_activity_user_custom_card_adapter">UserCustomCardAdapter</string>
 </resources>

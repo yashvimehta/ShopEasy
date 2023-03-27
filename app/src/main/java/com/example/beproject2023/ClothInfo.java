@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.beproject2023.ApiHelper.ApiInterface;
 import com.example.beproject2023.ApiHelper.VTRResult;
@@ -64,11 +65,12 @@ public class ClothInfo extends AppCompatActivity {
     ImageView thumbnailImageView;
     TextView colorTextView, sizeTextView , patternTextView , priceTextView;
     EditText inStockInputText;
-    Button saveCopiesButton, VTRButton;
+    Button saveCopiesButton, VTRButton, addToCartButton;
 
     Bitmap photo_cloth, photo_user;
 
     StorageReference storage;
+    FirebaseUser mUser;
 
     FirebaseFirestore db;
 
@@ -82,6 +84,7 @@ public class ClothInfo extends AppCompatActivity {
         setContentView(R.layout.activity_cloth_info);
 
         VTRButton = findViewById(R.id.VTRButton);
+        addToCartButton = findViewById(R.id.addToCartButton);
 
         db = FirebaseFirestore.getInstance();
 
@@ -136,7 +139,7 @@ public class ClothInfo extends AppCompatActivity {
 
 
         //get user image
-        FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+        mUser = FirebaseAuth.getInstance().getCurrentUser();
         db.collection("users")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -268,20 +271,53 @@ public class ClothInfo extends AppCompatActivity {
                 getPredictionsFromServer(finalClothData1[4], finalClothData2);
             }
         });
+
+        String[] finalClothData3 = clothData;
+        addToCartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("barcode",finalClothData3[5] );
+                Log.i("user uid", mUser.getUid());
+
+                db.collection("cart")
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                int val=0;
+                                if (task.isSuccessful()) {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        String barcode_fb = String.valueOf(document.getData().get("barcode"));
+                                        String uid_fb = String.valueOf(document.getData().get("useruid"));
+                                        String size = String.valueOf(document.getData().get("size"));
+                                        if(finalClothData3[5].equals(barcode_fb) && uid_fb.equals(mUser.getUid()) && size.equals(dropdown.getSelectedItem().toString())){
+                                            val++;
+                                        }
+                                    }
+                                    if(val!=0){
+                                        Toast.makeText(ClothInfo.this, "Item already added in cart", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else{
+                                        Map<String, Object> mMap = new HashMap<>();
+                                        mMap.put("barcode", finalClothData3[5]);
+                                        mMap.put("size", dropdown.getSelectedItem().toString());
+                                        mMap.put("useruid", mUser.getUid());
+                                        db.collection("cart").add(mMap);
+                                        Toast.makeText(ClothInfo.this, "Added to Cart", Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+                                    Log.d(TAG, "Error getting documents: ", task.getException());
+                                }
+                            }
+                        });
+            }
+        });
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         finish();
-    }
-    public void addBook(String isbn, String name){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Map<String, Object> mMap = new HashMap<>();
-        mMap.put("Name", name);
-        mMap.put("ISBN", isbn);
-        mMap.put("Copies", "0");
-        db.collection("Books").add(mMap);
     }
 
     public void getPredictionsFromServer(String s,String[] clothData ) {
@@ -312,13 +348,8 @@ public class ClothInfo extends AppCompatActivity {
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(okHttpClient)
                     .build();
-
-            Log.i("fil1",file_cloth.getName() );
-            Log.i("fil2",file_user.getName() );
             ApiInterface apiInterface = retrofit.create(ApiInterface.class);
-            Log.i("RN", "RN");
             Call<VTRResult> mCall = apiInterface.sendVTRImage(body_user, body_cloth);
-            Log.i("RN", "RN");
             mCall.enqueue(new Callback<VTRResult>() {
                 @Override
                 public void onResponse(Call<VTRResult> call, Response<VTRResult> response) {
@@ -388,4 +419,5 @@ public class ClothInfo extends AppCompatActivity {
 
         return path;
     }
+
 }
