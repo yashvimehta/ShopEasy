@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.beproject2023.ApiHelper.ApiInterface;
+import com.example.beproject2023.ApiHelper.RecommendationResult;
 import com.example.beproject2023.ApiHelper.VTRResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -204,6 +205,9 @@ public class ClothInfo extends AppCompatActivity {
         inStockInputText=findViewById(R.id.inStockInputText);
 
 
+
+
+
         String[] finalClothData = clothData;
         db.collection("clothes")
                 .get()
@@ -270,6 +274,8 @@ public class ClothInfo extends AppCompatActivity {
 //            saveCopiesButton.setVisibility(View.INVISIBLE);
 //            Log.i("success","is not admin");
         }
+
+        getPredictionsFromServer1();
 
         String[] finalClothData1 = clothData;
         String[] finalClothData2 = clothData;
@@ -426,6 +432,89 @@ public class ClothInfo extends AppCompatActivity {
         }
 
         return path;
+    }
+
+    public void getPredictionsFromServer1() {
+
+        try {
+            thumbnailImageView.buildDrawingCache();
+            Bitmap bmap = thumbnailImageView.getDrawingCache();
+
+            Uri tempUri = saveBitmapImage(ClothInfo.contextOfApplication, bmap);
+            String filePath = getFilePathFromUri(tempUri);
+
+            final File file = new File(filePath);
+            final OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                    .readTimeout(60, TimeUnit.SECONDS)
+                    .connectTimeout(60, TimeUnit.SECONDS)
+                    .build();
+            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+            MultipartBody.Part body_cloth = MultipartBody.Part.createFormData("image", file.getName(), requestFile);
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(ApiInterface.BASE_URL_PREDICTOR)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .client(okHttpClient)
+                    .build();
+
+            ApiInterface apiInterface = retrofit.create(ApiInterface.class);
+            Call<RecommendationResult> mCall = apiInterface.sendRecImage(body_cloth);
+            mCall.enqueue(new Callback<RecommendationResult>() {
+                @Override
+                public void onResponse(Call<RecommendationResult> call, Response<RecommendationResult> response) {
+                    Log.i("yashvi1", "1");
+                    RecommendationResult mResult = response.body();
+                    Log.i("yashvi", mResult.toString() +"");
+                    if (mResult.getGeneralSuccess()) {
+                        Log.i("Success Checking", mResult.getVTRText().toString() +"");
+
+                        byte [] encodeByte1 = Base64.decode(mResult.getVTRText().get(0),DEFAULT);
+                        Bitmap bitmap1 = BitmapFactory.decodeByteArray(encodeByte1, 0, encodeByte1.length);
+
+                        byte [] encodeByte2 = Base64.decode(mResult.getVTRText().get(1),DEFAULT);
+                        Bitmap bitmap2 = BitmapFactory.decodeByteArray(encodeByte2, 0, encodeByte2.length);
+
+                        byte [] encodeByte3 = Base64.decode(mResult.getVTRText().get(2),DEFAULT);
+                        Bitmap bitmap3 = BitmapFactory.decodeByteArray(encodeByte3, 0, encodeByte3.length);
+
+                        byte [] encodeByte4 = Base64.decode(mResult.getVTRText().get(3),DEFAULT);
+                        Bitmap bitmap4 = BitmapFactory.decodeByteArray(encodeByte4, 0, encodeByte4.length);
+
+                        byte [] encodeByte5 = Base64.decode(mResult.getVTRText().get(4),DEFAULT);
+                        Bitmap bitmap5 = BitmapFactory.decodeByteArray(encodeByte5, 0, encodeByte5.length);
+
+                        recommendImageView1.setImageBitmap(bitmap1);
+                        recommendImageView2.setImageBitmap(bitmap2);
+                        recommendImageView3.setImageBitmap(bitmap3);
+                        recommendImageView1.setImageBitmap(bitmap4);
+                        recommendImageView1.setImageBitmap(bitmap5);
+                    } else {
+                        String text = "Failure";
+                        Log.i("Success Checking", mResult.getVTRError()+"");
+
+                    }
+                    if (file.exists()) {
+                        file.delete();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<RecommendationResult> call, Throwable t) {
+                    Log.i("Failure Checking", "There was an error " + t.getMessage());
+                    String text = "There was some error";
+                    if (file.exists()) {
+                        file.delete();
+                    }
+
+                }
+            });
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.i("errrrrorr", e.toString());
+            String text = "There was some error";
+        }
+
     }
 
 }

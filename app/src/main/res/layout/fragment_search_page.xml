@@ -44,8 +44,8 @@
             style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
             android:indeterminateTint="@android:color/white"
+            android:visibility="invisible"
             card_view:layout_constraintBottom_toBottomOf="@+id/clothListView"
             card_view:layout_constraintEnd_toEndOf="@+id/clothListView"
             card_view:layout_constraintStart_toStartOf="@+id/clothListView"
@@ -101,6 +101,28 @@
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toBottomOf="@+id/clothNameEditText" />
+
+        <ImageView
+            android:id="@+id/cameraImageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="37dp"
+            android:layout_marginBottom="14dp"
+            card_view:layout_constraintBottom_toTopOf="@+id/textSearch"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintHorizontal_bias="0.703"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:srcCompat="@drawable/ic_baseline_camera_alt_24" />
+
+        <ImageView
+            android:id="@+id/galleryImageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="37dp"
+            android:layout_marginBottom="15dp"
+            card_view:layout_constraintBottom_toTopOf="@+id/textSearch"
+            card_view:layout_constraintEnd_toEndOf="parent"
+            card_view:layout_constraintHorizontal_bias="0.862"
+            card_view:layout_constraintStart_toStartOf="parent"
+            card_view:srcCompat="@drawable/gallery" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
