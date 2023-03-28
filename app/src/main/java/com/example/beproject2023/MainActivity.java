@@ -42,13 +42,6 @@ public class MainActivity extends AppCompatActivity {
     Button buttonLogin, buttonSignup;
     EditText editTextEmail, editTextPasswordLogin;
 
-
-    public void launchHomeActivity() {
-        Intent intent = new Intent(MainActivity.this, HomePage.class);
-
-        startActivity(intent);
-        finish();
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,10 +65,19 @@ public class MainActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
-                                    if(String.valueOf(document.getData().get("useruid")).equals(user.getUid())  && String.valueOf(document.getData().get("isAdmin")).equals("true") )
-                                    {
+                                    if(String.valueOf(document.getData().get("useruid")).equals(user.getUid())  && String.valueOf(document.getData().get("isAdmin")).equals("true") ) {
                                         Log.i("ADMINNN", "ADMIN");
                                         isAdmin=true;
+                                    }
+                                    if(isAdmin){
+                                        Intent intent = new Intent(MainActivity.this, AdminHomePage.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                    else{
+                                        Intent intent = new Intent(MainActivity.this, HomePage.class);
+                                        startActivity(intent);
+                                        finish();
                                     }
                                 }
                             } else {
@@ -83,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     });
-            launchHomeActivity();
         }
     }
 
@@ -113,10 +114,19 @@ public class MainActivity extends AppCompatActivity {
                                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                                 if (task.isSuccessful()) {
                                                     for (QueryDocumentSnapshot document : task.getResult()) {
-                                                        if(String.valueOf(document.getData().get("uuid")).equals(user.getUid())  && String.valueOf(document.getData().get("isAdmin")).equals("true") )
-                                                        {
+                                                        if(String.valueOf(document.getData().get("uuid")).equals(user.getUid())  && String.valueOf(document.getData().get("isAdmin")).equals("true") ) {
                                                             Log.i("ADMINNN", "ADMIN");
                                                             isAdmin=true;
+                                                        }
+                                                        if(isAdmin){
+                                                            Intent intent = new Intent(MainActivity.this, AdminHomePage.class);
+                                                            startActivity(intent);
+                                                            finish();
+                                                        }
+                                                        else{
+                                                            Intent intent = new Intent(MainActivity.this, HomePage.class);
+                                                            startActivity(intent);
+                                                            finish();
                                                         }
                                                     }
                                                 } else {

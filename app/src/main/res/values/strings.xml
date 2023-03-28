@@ -15,4 +15,5 @@
     <string name="title_activity_cloth_info">ClothInfo</string>
     <string name="title_activity_vtr">VTR</string>
     <string name="title_activity_user_custom_card_adapter">UserCustomCardAdapter</string>
+    <string name="title_activity_admin_home_page">AdminHomePage</string>
 </resources>
