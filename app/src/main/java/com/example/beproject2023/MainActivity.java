@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -26,11 +28,15 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
     public static boolean isAdmin;
     FirebaseAuth firebaseAuth;
+    FirebaseFirestore db;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
+    FirebaseUser user;
 
     TextView textViewToggle;
     Button buttonLogin, buttonSignup;
@@ -47,25 +53,45 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        isAdmin=false;
 
         FirebaseApp.initializeApp(getApplicationContext());
 
         firebaseAuth = FirebaseAuth.getInstance();
+        db= FirebaseFirestore.getInstance();
+        user = firebaseAuth.getCurrentUser();
 
         editTextEmail = findViewById(R.id.editTextLogInEmailAddress);
         editTextPasswordLogin = findViewById(R.id.editTextLogInPassword);
 
         if (firebaseAuth.getCurrentUser() != null) {
+            db.collection("users")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    if(String.valueOf(document.getData().get("useruid")).equals(user.getUid())  && String.valueOf(document.getData().get("isAdmin")).equals("true") )
+                                    {
+                                        Log.i("ADMINNN", "ADMIN");
+                                        isAdmin=true;
+                                    }
+                                }
+                            } else {
+                                Log.d(TAG, "Error getting documents: ", task.getException());
+                            }
+                        }
+                    });
             launchHomeActivity();
         }
-
-
     }
-
 
     public void doLogin(View view) {
         String email = editTextEmail.getText().toString();
         String password = editTextPasswordLogin.getText().toString();
+        firebaseAuth = FirebaseAuth.getInstance();
+        db= FirebaseFirestore.getInstance();
 
         Log.i("LOGIN", " " + email + " " + password);
 
@@ -77,8 +103,28 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
+                                user = firebaseAuth.getCurrentUser();
 
                                 Log.i("SUCCESS", "Logged in " );
+                                db.collection("users")
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                                        if(String.valueOf(document.getData().get("uuid")).equals(user.getUid())  && String.valueOf(document.getData().get("isAdmin")).equals("true") )
+                                                        {
+                                                            Log.i("ADMINNN", "ADMIN");
+                                                            isAdmin=true;
+                                                        }
+                                                    }
+                                                } else {
+                                                    Log.d(TAG, "Error getting documents: ", task.getException());
+                                                }
+                                            }
+                                        });
+
                                 Intent intent = new Intent(MainActivity.this, HomePage.class);
                                 startActivity(intent);
                                 finish();
