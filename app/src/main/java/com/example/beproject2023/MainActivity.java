@@ -69,8 +69,10 @@ public class MainActivity extends AppCompatActivity {
                                         Log.i("ADMINNN", "ADMIN");
                                         isAdmin=true;
                                     }
+                                    Log.i("isADMIN", String.valueOf(isAdmin));
                                     if(isAdmin){
                                         Intent intent = new Intent(MainActivity.this, AdminHomePage.class);
+                                        Log.i("ADMIN YASH", "HEY");
                                         startActivity(intent);
                                         finish();
                                     }
@@ -120,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
                                                         }
                                                         if(isAdmin){
                                                             Intent intent = new Intent(MainActivity.this, AdminHomePage.class);
+                                                            Log.i("ADMIN YASH", "HEY");
                                                             startActivity(intent);
                                                             finish();
                                                         }
@@ -135,9 +138,6 @@ public class MainActivity extends AppCompatActivity {
                                             }
                                         });
 
-                                Intent intent = new Intent(MainActivity.this, HomePage.class);
-                                startActivity(intent);
-                                finish();
                             } else {
                                 Log.i("FAIL", "Log in failed " + task.getException());
                                 Toast.makeText(MainActivity.this, "Failed to Log In", Toast.LENGTH_SHORT).show();

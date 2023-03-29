@@ -119,6 +119,18 @@ public class ClothInfo extends AppCompatActivity {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                     photo_cloth = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+//                    BackgroundRemover.bitmapForProcessing(
+//                            bitmap,
+//                            object: OnBackgroundChangeListener{
+//                        override fun onSuccess(bitmap: Bitmap) {
+//                            //do what ever you want to do with this bitmap
+//                        }
+//
+//                        override fun onFailed(exception: Exception) {
+//                            //exception
+//                        }
+//                    }
+//)
                     thumbnailImageView.setImageBitmap(photo_cloth);
                 }
             }).addOnFailureListener(new OnFailureListener() {

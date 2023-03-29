@@ -8,6 +8,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 
+import org.checkerframework.checker.units.qual.A;
+
 public class AdminFragmentAdapter extends FragmentPagerAdapter {
     public AdminFragmentAdapter(FragmentManager fm)
     {
@@ -16,14 +18,12 @@ public class AdminFragmentAdapter extends FragmentPagerAdapter {
 
     @NonNull
     @Override
-    public Fragment getItem(int position)
-    {
-        if (position==0){
-            return new EditProfileFragment();
+    public Fragment getItem(int position) {
+        if(position==0){
+            return new AdminEditProfileFragment();
         }
-        else {
-            return new SearchPageFragment();
-        }
+        return new SearchPageFragment();
+
     }
 
     @Override
