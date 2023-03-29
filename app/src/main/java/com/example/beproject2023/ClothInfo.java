@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Html;
+import android.text.InputType;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -63,11 +64,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ClothInfo extends AppCompatActivity {
     private static Context contextOfApplication;
-    TextView titleTextView;
+    TextView titleTextView, textView2, similarProducts;
     ImageView thumbnailImageView, recommendImageView1, recommendImageView2, recommendImageView3, recommendImageView4, recommendImageView5;
     TextView colorTextView, sizeTextView , patternTextView , priceTextView;
-    EditText inStockInputText;
-    Button saveCopiesButton, VTRButton, addToCartButton;
+    EditText inStockInputText, colorInputText, priceInputText , patternInputText , sizeInputText;
+    Button saveChangesButton, VTRButton, addToCartButton;
 
     Bitmap photo_cloth, photo_user;
 
@@ -77,6 +78,7 @@ public class ClothInfo extends AppCompatActivity {
     FirebaseFirestore db;
 
     String user_image_name;
+    Spinner dropdown;
 
     public static final int DEFAULT=0;
 
@@ -88,12 +90,22 @@ public class ClothInfo extends AppCompatActivity {
 
         VTRButton = findViewById(R.id.VTRButton);
         addToCartButton = findViewById(R.id.addToCartButton);
+        saveChangesButton= findViewById(R.id.saveChangesButton);
 
         recommendImageView1 = findViewById(R.id.recommendImageView1);
         recommendImageView2 = findViewById(R.id.recommendImageView2);
         recommendImageView3 = findViewById(R.id.recommendImageView3);
         recommendImageView4 = findViewById(R.id.recommendImageView4);
         recommendImageView5 = findViewById(R.id.recommendImageView5);
+
+        inStockInputText=findViewById(R.id.inStockInputText);
+        priceInputText = findViewById(R.id.priceInputText);
+        colorInputText = findViewById(R.id.colorInputText);
+        patternInputText = findViewById(R.id.patternInputText);
+        sizeInputText = findViewById(R.id.sizeInputText);
+
+        textView2= findViewById(R.id.textView2);
+        similarProducts = findViewById(R.id.similarProducts);
 
         db = FirebaseFirestore.getInstance();
 
@@ -105,7 +117,7 @@ public class ClothInfo extends AppCompatActivity {
         titleTextView=findViewById(R.id.titleTextView);
         titleTextView.setText(clothData[0] + " " + clothData[1]);
 
-        Spinner dropdown = findViewById(R.id.spinner);
+        dropdown = findViewById(R.id.spinner);
         String[] items = clothData[3].split( " ");
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, items);
         dropdown.setAdapter(adapter);
@@ -146,18 +158,11 @@ public class ClothInfo extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        colorTextView = findViewById(R.id.colorTextView);
-        colorTextView.setText(Html.fromHtml("<b>" + "Color:"+"</b> " + clothData[0]));
-
-        sizeTextView = findViewById(R.id.sizeTextView);
-        sizeTextView.setText(Html.fromHtml("<b>" + "Size(s):"+"</b> " + clothData[3]));
-
-        patternTextView = findViewById(R.id.patternTextView);
-        patternTextView.setText(Html.fromHtml("<b>" + "Pattern(s):"+"</b> " + clothData[1]));
-
-        priceTextView = findViewById(R.id.priceTextView);
-        priceTextView.setText(Html.fromHtml("<b>" + "Color:"+"</b> " + clothData[2]));
-
+        colorInputText.setText(clothData[0]);
+        sizeInputText.setText(clothData[3]);
+        patternInputText.setText(clothData[1]);
+        priceInputText.setText(clothData[2]);
+        inStockInputText.setText(clothData[6]);
 
         //get user image
         mUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -199,96 +204,80 @@ public class ClothInfo extends AppCompatActivity {
                         }
                     }
                 });
-
-//        publishTextView=findViewById(R.id.patternTextView);
-//        String publishText="";
-//        if (!bookData[2].equals("na")){
-//            publishText+=" <b>by</b> "+bookData[2];
-//        }
-//        if(!bookData[3].equals("na")){
-//            publishText+=" <b>dated</b> "+bookData[3];
-//        }
-//        if (!publishText.equals("na")) {
-//            publishTextView.setText(Html.fromHtml("<b>Published</b>" + publishText));
-//        }
-//        else{
-//            publishTextView.setVisibility(View.INVISIBLE);
-//        }
-        inStockInputText=findViewById(R.id.inStockInputText);
-
-
-
-
-
-        String[] finalClothData = clothData;
-        db.collection("clothes")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        int val = 0;
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String barcode = String.valueOf(document.getData().get("barcode"));
-                                if(finalClothData[5].equals(barcode)){  //if ISBN exists
-                                    String inStock = String.valueOf(document.getData().get("in_stock"));
-                                    inStockInputText.setText(inStock);
-                                }
-                            }
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
-                        }
-                    }
-                });
-        saveCopiesButton = findViewById(R.id.saveCopiesButton);
-
         if(isAdmin) {
-//            Log.i("Success","is admin");
-//            inStockInputText.setInputType(InputType.TYPE_CLASS_NUMBER);
-//
-//
-//            saveCopiesButton.setVisibility(View.VISIBLE);
-//            saveCopiesButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    String noOfCopies = inStockInputText.getText().toString();
-//                    if(noOfCopies.equals("")){
-//                        Toast.makeText(ClothInfo.this, "No. of copies cannot be empty", Toast.LENGTH_SHORT).show();
-//                    }
-//                    else if(Integer.parseInt(noOfCopies)<0){
-//                        Toast.makeText(ClothInfo.this, "No. of copies cannot be less than 0!", Toast.LENGTH_SHORT).show();
-//                    }
-//                    else{
-//                        db.collection("Books")
-//                                .get()
-//                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//                                    @Override
-//                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                                        int val = 0;
-//                                        if (task.isSuccessful()) {
-//                                            for (QueryDocumentSnapshot document : task.getResult()) {
-//                                                if(String.valueOf(document.getData().get("ISBN")).equals(finalBookData[6])) {
-//                                                    db.collection("Books").document(document.getId()).update("Copies", noOfCopies);
-//                                                }
-//                                            }
-//                                        } else {
-//                                            Log.d(TAG, "Error getting documents: ", task.getException());
-//                                        }
-//                                    }
-//                                });
-//                        Toast.makeText(ClothInfo.this, "No. of copies updated!", Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//            });
+
+            Log.i("Success","is admin");
+            textView2.setVisibility(View.INVISIBLE);
+            dropdown.setVisibility(View.INVISIBLE);
+            VTRButton.setVisibility(View.INVISIBLE);
+            addToCartButton.setVisibility(View.INVISIBLE);
+            similarProducts.setVisibility(View.INVISIBLE);
+            recommendImageView1.setVisibility(View.INVISIBLE);
+            recommendImageView2.setVisibility(View.INVISIBLE);
+            recommendImageView3.setVisibility(View.INVISIBLE);
+            recommendImageView4.setVisibility(View.INVISIBLE);
+            recommendImageView5.setVisibility(View.INVISIBLE);
+
+            inStockInputText.setInputType(InputType.TYPE_CLASS_NUMBER);
+            priceInputText.setInputType(InputType.TYPE_CLASS_NUMBER);
+            sizeInputText.setInputType(InputType.TYPE_CLASS_TEXT);
+
+            colorInputText.setInputType(InputType.TYPE_NULL);
+            patternInputText.setInputType(InputType.TYPE_NULL);
+
+            saveChangesButton.setVisibility(View.VISIBLE);
+            String[] finalClothData = clothData;
+            saveChangesButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    String noOfStock = inStockInputText.getText().toString();
+                    String price = priceInputText.getText().toString();
+                    String size = sizeInputText.getText().toString();
+                    if(noOfStock.equals("") || price.equals("") || size.equals("")){
+                        Toast.makeText(ClothInfo.this, "Fields cannot be empty", Toast.LENGTH_SHORT).show();
+                    }
+                    else if(Integer.parseInt(noOfStock)<0){
+                        Toast.makeText(ClothInfo.this, "No. of stock cannot be less than 0!", Toast.LENGTH_SHORT).show();
+                    }
+                    else if(Integer.parseInt(price)<0){
+                        Toast.makeText(ClothInfo.this, "Price cannot be less than 0!", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        db.collection("clothes")
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        int val = 0;
+                                        if (task.isSuccessful()) {
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                if(String.valueOf(document.getData().get("barcode")).equals(finalClothData[5])) {
+                                                    db.collection("clothes").document(document.getId()).update("in_stock", noOfStock);
+                                                    db.collection("clothes").document(document.getId()).update("price", price);
+                                                    db.collection("clothes").document(document.getId()).update("size", size);
+                                                }
+                                            }
+                                        } else {
+                                            Log.d(TAG, "Error getting documents: ", task.getException());
+                                        }
+                                    }
+                                });
+                        Toast.makeText(ClothInfo.this, "Fields updated!", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         }
         else{
-//            noOfCopiesEditText.setInputType(InputType.TYPE_NULL);
-//            saveCopiesButton.setVisibility(View.INVISIBLE);
-//            Log.i("success","is not admin");
+            inStockInputText.setInputType(InputType.TYPE_NULL);
+            colorInputText.setInputType(InputType.TYPE_NULL);
+            patternInputText.setInputType(InputType.TYPE_NULL);
+            priceInputText.setInputType(InputType.TYPE_NULL);
+            sizeInputText.setInputType(InputType.TYPE_NULL);
+            saveChangesButton.setVisibility(View.INVISIBLE);
+            Log.i("success","is not admin");
         }
 
         getPredictionsFromServer1();
-
         String[] finalClothData1 = clothData;
         String[] finalClothData2 = clothData;
         VTRButton.setOnClickListener(new View.OnClickListener() {

@@ -45,6 +45,7 @@
                 android:text="loading..."
                 android:textColor="#FFFFFF"
                 tools:ignore="TouchTargetSizeCheck" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
@@ -94,14 +95,96 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="36dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginTop="24dp"
             android:text="Color"
             android:textColor="#FFFFFF"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/noOfCopiesTextInputLayout" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/colorInputText"
+            android:layout_width="242dp"
+            android:layout_height="23dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="24dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="In stock"
+            android:inputType="none"
+            android:paddingLeft="5dp"
+            android:paddingTop="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="5dp"
+            android:text="loading..."
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/colorTextView"
+            app:layout_constraintTop_toBottomOf="@+id/noOfCopiesTextInputLayout"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/sizeInputText"
+            android:layout_width="242dp"
+            android:layout_height="23dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="60dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="In stock"
+            android:inputType="none"
+            android:paddingLeft="5dp"
+            android:paddingTop="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="5dp"
+            android:text="loading..."
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/colorTextView"
+            app:layout_constraintTop_toBottomOf="@+id/noOfCopiesTextInputLayout"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/patternInputText"
+            android:layout_width="242dp"
+            android:layout_height="23dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="96dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="In stock"
+            android:inputType="none"
+            android:paddingLeft="5dp"
+            android:paddingTop="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="5dp"
+            android:text="loading..."
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/colorTextView"
+            app:layout_constraintTop_toBottomOf="@+id/noOfCopiesTextInputLayout"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/priceInputText"
+            android:layout_width="242dp"
+            android:layout_height="23dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="128dp"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="In stock"
+            android:inputType="none"
+            android:paddingLeft="5dp"
+            android:paddingTop="5dp"
+            android:paddingRight="5dp"
+            android:paddingBottom="5dp"
+            android:text="loading..."
+            android:textColor="#FFFFFF"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/colorTextView"
+            app:layout_constraintTop_toBottomOf="@+id/noOfCopiesTextInputLayout"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <TextView
             android:id="@+id/patternTextView"
@@ -109,11 +192,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
             android:text="Pattern"
             android:textColor="#FFFFFF"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sizeTextView" />
 
@@ -123,11 +204,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="48dp"
-            android:layout_marginEnd="16dp"
             android:text="Price"
             android:textColor="#FFFFFF"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sizeTextView" />
 
@@ -137,10 +216,9 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
             android:text="Size"
             android:textColor="#FFFFFF"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/colorTextView" />
 
@@ -165,6 +243,19 @@
             android:background="@drawable/custom_button"
             android:text="Add to Cart"
             android:textColor="#FFFFFF"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/priceTextView" />
+
+        <Button
+            android:id="@+id/saveChangesButton"
+            android:layout_width="152dp"
+            android:layout_height="53dp"
+            android:layout_marginStart="120dp"
+            android:layout_marginTop="128dp"
+            android:background="@drawable/custom_button"
+            android:text="Save Changes"
+            android:textColor="#FFFFFF"
+            android:visibility="invisible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/priceTextView" />
 

@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                     else{
                                         Intent intent = new Intent(MainActivity.this, HomePage.class);
+                                        Log.i("USER YASH", "HEY");
                                         startActivity(intent);
                                         finish();
                                     }
