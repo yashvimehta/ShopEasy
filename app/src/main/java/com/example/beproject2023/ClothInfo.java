@@ -507,8 +507,8 @@ public class ClothInfo extends AppCompatActivity {
                                 recommendImageView1.setImageBitmap(bitmap1);
                                 recommendImageView2.setImageBitmap(bitmap2);
                                 recommendImageView3.setImageBitmap(bitmap3);
-                                recommendImageView1.setImageBitmap(bitmap4);
-                                recommendImageView1.setImageBitmap(bitmap5);
+                                recommendImageView4.setImageBitmap(bitmap4);
+                                recommendImageView5.setImageBitmap(bitmap5);
                             } else {
                                 String text = "Failure";
                                 Log.i("Success Checking", mResult.getVTRError()+"");
