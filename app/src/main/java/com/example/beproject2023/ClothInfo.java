@@ -44,7 +44,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import static com.example.beproject2023.MainActivity.isAdmin;
-
+import com.example.beproject2023.BgRemover;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -62,7 +62,14 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+
+
 public class ClothInfo extends AppCompatActivity {
+    Bitmap finalBit;
+
+//    public ClothInfo(Bitmap bit){
+//        finalBit = bit;
+//    }
     private static Context contextOfApplication;
     TextView titleTextView, textView2, similarProducts;
     ImageView thumbnailImageView, recommendImageView1, recommendImageView2, recommendImageView3, recommendImageView4, recommendImageView5;
@@ -70,7 +77,7 @@ public class ClothInfo extends AppCompatActivity {
     EditText inStockInputText, colorInputText, priceInputText , patternInputText , sizeInputText;
     Button saveChangesButton, VTRButton, addToCartButton;
 
-    Bitmap photo_cloth, photo_user;
+    public Bitmap photo_cloth, photo_user;
 
     StorageReference storage;
     FirebaseUser mUser;
@@ -131,6 +138,9 @@ public class ClothInfo extends AppCompatActivity {
                 @Override
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                     photo_cloth = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+//                    BgRemover bgRemover = new BgRemover(photo_cloth);
+//                    thumbnailImageView.setImageBitmap(finalBit);
+
 //                    BackgroundRemover.bitmapForProcessing(
 //                            bitmap,
 //                            object: OnBackgroundChangeListener{
