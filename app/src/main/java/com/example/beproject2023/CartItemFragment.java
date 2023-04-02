@@ -47,6 +47,7 @@ public class CartItemFragment extends Fragment {
     FirebaseAuth firebaseAuth;
     ListView mListView;
     StorageReference storage;
+    FirebaseUser user;
     UserCustomCardAdapter mUserCustomCardAdapter;
     final String[] memberid = new String[1];
     final String[] vall = new String[2];
@@ -64,7 +65,6 @@ public class CartItemFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_cart_item, container, false);
         mListView = view.findViewById(R.id.cartItems);
         firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = firebaseAuth.getCurrentUser();
         db= FirebaseFirestore.getInstance();
 
         try {
@@ -73,6 +73,7 @@ public class CartItemFragment extends Fragment {
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            user = firebaseAuth.getCurrentUser();
                             if (task.isSuccessful()) {
                                 int val=0;
                                 ArrayList<String[]> stringArrayList=new ArrayList<String[]>();

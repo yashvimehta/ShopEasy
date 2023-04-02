@@ -44,7 +44,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import static com.example.beproject2023.MainActivity.isAdmin;
-import com.example.beproject2023.BgRemover;
+//import com.example.beproject2023.BgRemover;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

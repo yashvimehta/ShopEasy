@@ -36,6 +36,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.razorpay.Checkout;
 //import com.razorpay.Checkout;
 //import com.razorpay.PaymentResultListener;
 //import com.google.firebase.storage.FirebaseStorage;
@@ -105,14 +106,35 @@ public class UserCustomCardAdapter extends ArrayAdapter<String[]> {
         }
 
         buyNow = view.findViewById(R.id.buyNow);
-
         buyNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                transact(Integer.parseInt(mArrayList.get(position)[2]));
+
+
             }
         });
 
         return view;
+    }
+    public void transact(int amount){
+        // initialize Razorpay account.
+        Checkout checkout = new Checkout();
+        checkout.setKeyID("rzp_test_nNQTEixTzHLBjc");
+        checkout.setImage(R.drawable.shopping_bag);
+
+        // initialize json object
+        JSONObject object = new JSONObject();
+        try {
+            object.put("name", "ShopEasy");
+            object.put("description", "Fee payment");
+            object.put("theme.color", "");
+            object.put("currency", "INR");
+            object.put("amount", amount*100);
+            checkout.open((Activity)mContext, object);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }

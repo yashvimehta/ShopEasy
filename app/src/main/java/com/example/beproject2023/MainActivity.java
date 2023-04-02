@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
-                                    if(String.valueOf(document.getData().get("useruid")).equals(user.getUid())  && String.valueOf(document.getData().get("isAdmin")).equals("true") ) {
+                                    if(String.valueOf(document.getData().get("uuid")).equals(user.getUid())  && String.valueOf(document.getData().get("isAdmin")).equals("true") ) {
                                         Log.i("ADMINNN", "ADMIN");
                                         isAdmin=true;
                                     }
