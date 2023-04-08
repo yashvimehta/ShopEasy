@@ -78,6 +78,7 @@ public class CartItemFragment extends Fragment {
                                 int val=0;
                                 ArrayList<String[]> stringArrayList=new ArrayList<String[]>();
                                 for (QueryDocumentSnapshot document : task.getResult()) {
+                                    String ss = document.getId();
                                     String useruid = String.valueOf(document.getData().get("useruid"));
                                     if(useruid.equals(user.getUid())){
                                         String size =  String.valueOf(document.getData().get("size"));
@@ -97,7 +98,7 @@ public class CartItemFragment extends Fragment {
                                                                     String pattern = String.valueOf(document.getData().get("pattern"));
                                                                     String price = String.valueOf(document.getData().get("price"));
                                                                     String image_name = String.valueOf(document.getData().get("image_name"));
-                                                                    String[] arrayListFeeder=new String[]{StringFormatter.capitalizeWord(color), StringFormatter.capitalizeWord(pattern), price, size, image_name, barcode};
+                                                                    String[] arrayListFeeder=new String[]{StringFormatter.capitalizeWord(color), StringFormatter.capitalizeWord(pattern), price, size, image_name, barcode, ss};
                                                                     stringArrayList.add(arrayListFeeder);
                                                                     mUserCustomCardAdapter = new UserCustomCardAdapter(requireContext(), stringArrayList);
                                                                     mListView.setAdapter(mUserCustomCardAdapter);
