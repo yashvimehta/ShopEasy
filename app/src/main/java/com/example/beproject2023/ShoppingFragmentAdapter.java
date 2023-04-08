@@ -19,19 +19,16 @@ public class ShoppingFragmentAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position)
     {
         if (position==0){
-            return new CartItemFragment();
+            return new EditProfileFragment();
         }
         else if (position == 1) {
             return new SearchPageFragment();
         }
         else if (position == 2) {
-            return new RecommendationFragment();
-        }
-        else if(position == 3){
-            return new EditProfileFragment();
+            return new CartItemFragment();
         }
         else{
-            return new BarcodeFragment();
+            return new ItemsBought();
         }
     }
 
