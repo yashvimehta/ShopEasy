@@ -84,7 +84,7 @@ public class ClothInfo extends AppCompatActivity {
 
     FirebaseFirestore db;
 
-    String user_image_name;
+    String user_image_name, image_name1 , image_name2 , image_name3 , image_name4 , image_name5;
     Spinner dropdown;
 
     public static final int DEFAULT=0;
@@ -297,6 +297,7 @@ public class ClothInfo extends AppCompatActivity {
             }
         });
 
+
         String[] finalClothData3 = clothData;
         addToCartButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -337,6 +338,38 @@ public class ClothInfo extends AppCompatActivity {
                         });
             }
         });
+
+        recommendImageView1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickRecommendation(image_name1);
+            }
+        });
+        recommendImageView2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickRecommendation(image_name2);
+            }
+        });
+        recommendImageView3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickRecommendation(image_name3);
+            }
+        });
+        recommendImageView4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickRecommendation(image_name4);
+            }
+        });
+        recommendImageView5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickRecommendation(image_name5);
+            }
+        });
+
     }
 
     @Override
@@ -497,21 +530,21 @@ public class ClothInfo extends AppCompatActivity {
                             RecommendationResult mResult = response.body();
                             Log.i("yashvi", mResult.toString() +"");
                             if (mResult.getGeneralSuccess()) {
-                                Log.i("Success Checking", mResult.getVTRText().toString() +"");
+                                Log.i("Success Checking", mResult.getRecommendationText().toString() +"");
 
-                                byte [] encodeByte1 = Base64.decode(mResult.getVTRText().get(0),DEFAULT);
+                                byte [] encodeByte1 = Base64.decode(mResult.getRecommendationText().get(0),DEFAULT);
                                 Bitmap bitmap1 = BitmapFactory.decodeByteArray(encodeByte1, 0, encodeByte1.length);
 
-                                byte [] encodeByte2 = Base64.decode(mResult.getVTRText().get(1),DEFAULT);
+                                byte [] encodeByte2 = Base64.decode(mResult.getRecommendationText().get(1),DEFAULT);
                                 Bitmap bitmap2 = BitmapFactory.decodeByteArray(encodeByte2, 0, encodeByte2.length);
 
-                                byte [] encodeByte3 = Base64.decode(mResult.getVTRText().get(2),DEFAULT);
+                                byte [] encodeByte3 = Base64.decode(mResult.getRecommendationText().get(2),DEFAULT);
                                 Bitmap bitmap3 = BitmapFactory.decodeByteArray(encodeByte3, 0, encodeByte3.length);
 
-                                byte [] encodeByte4 = Base64.decode(mResult.getVTRText().get(3),DEFAULT);
+                                byte [] encodeByte4 = Base64.decode(mResult.getRecommendationText().get(3),DEFAULT);
                                 Bitmap bitmap4 = BitmapFactory.decodeByteArray(encodeByte4, 0, encodeByte4.length);
 
-                                byte [] encodeByte5 = Base64.decode(mResult.getVTRText().get(4),DEFAULT);
+                                byte [] encodeByte5 = Base64.decode(mResult.getRecommendationText().get(4),DEFAULT);
                                 Bitmap bitmap5 = BitmapFactory.decodeByteArray(encodeByte5, 0, encodeByte5.length);
 
                                 recommendImageView1.setImageBitmap(bitmap1);
@@ -519,9 +552,15 @@ public class ClothInfo extends AppCompatActivity {
                                 recommendImageView3.setImageBitmap(bitmap3);
                                 recommendImageView4.setImageBitmap(bitmap4);
                                 recommendImageView5.setImageBitmap(bitmap5);
+
+                                image_name1 = mResult.getRecommendationText().get(5);
+                                image_name2 = mResult.getRecommendationText().get(6);
+                                image_name3 = mResult.getRecommendationText().get(7);
+                                image_name4 = mResult.getRecommendationText().get(8);
+                                image_name5 = mResult.getRecommendationText().get(9);
                             } else {
                                 String text = "Failure";
-                                Log.i("Success Checking", mResult.getVTRError()+"");
+                                Log.i("Success Checking", mResult.getRecommendationError()+"");
 
                             }
                             if (file.exists()) {
@@ -558,6 +597,56 @@ public class ClothInfo extends AppCompatActivity {
             String text = "There was some error";
         }
 
+    }
+
+    public void onClickRecommendation(String image_name){
+        db.collection("clothes")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        int val=0;
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String image_name_1 = String.valueOf(document.getData().get("image_name"));
+                                if(image_name.equals(image_name_1)){
+                                    val++;
+                                    String color = String.valueOf(document.getData().get("color"));
+                                    String pattern = String.valueOf(document.getData().get("pattern"));
+                                    String price = String.valueOf(document.getData().get("price"));
+                                    String size = String.valueOf(document.getData().get("size"));
+                                    String barcode = String.valueOf(document.getData().get("barcode"));
+                                    String in_stock = String.valueOf(document.getData().get("in_stock"));
+                                    String [] clothData1 = new String[]{color, pattern, price ,size , image_name , barcode , in_stock};
+                                    Intent intent = new Intent(ClothInfo.contextOfApplication, ClothInfo.class);
+                                    intent.putExtra("clothData", clothData1);
+                                    startActivity(intent);
+
+                                }
+                            }
+                            if(val==0){
+                                //add the item
+                                Map<String, Object> mMap = new HashMap<>();
+                                mMap.put("barcode","");
+                                mMap.put("size", "S M L");
+                                mMap.put("price", "400");
+                                mMap.put("pattern", "Sleeves");
+                                mMap.put("color", "Black");
+                                mMap.put("in_stock", "3");
+                                mMap.put("image_name", image_name);
+                                db.collection("clothes").add(mMap);
+                                String [] clothData1 = new String[]{"Black", "Sleeves", "400" ,"S M L" , image_name , "" , "3"};
+
+                                //todo add to storage
+                                Intent intent = new Intent(ClothInfo.contextOfApplication, ClothInfo.class);
+                                intent.putExtra("clothData", clothData1);
+                                startActivity(intent);
+                            }
+                        } else {
+                            Log.i("Error", "Error getting documents");
+                        }
+                    }
+                });
     }
 
 }

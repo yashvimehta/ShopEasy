@@ -152,21 +152,21 @@ public class RecommendationFragment extends Fragment {
                     RecommendationResult mResult = response.body();
                     Log.i("yashvi", mResult.toString() +"");
                     if (mResult.getGeneralSuccess()) {
-                        Log.i("Success Checking", mResult.getVTRText().toString() +"");
+                        Log.i("Success Checking", mResult.getRecommendationText().toString() +"");
 
-                        byte [] encodeByte1 = Base64.decode(mResult.getVTRText().get(0),DEFAULT);
+                        byte [] encodeByte1 = Base64.decode(mResult.getRecommendationText().get(0),DEFAULT);
                         Bitmap bitmap1 = BitmapFactory.decodeByteArray(encodeByte1, 0, encodeByte1.length);
 
-                        byte [] encodeByte2 = Base64.decode(mResult.getVTRText().get(1),DEFAULT);
+                        byte [] encodeByte2 = Base64.decode(mResult.getRecommendationText().get(1),DEFAULT);
                         Bitmap bitmap2 = BitmapFactory.decodeByteArray(encodeByte2, 0, encodeByte2.length);
 
-                        byte [] encodeByte3 = Base64.decode(mResult.getVTRText().get(2),DEFAULT);
+                        byte [] encodeByte3 = Base64.decode(mResult.getRecommendationText().get(2),DEFAULT);
                         Bitmap bitmap3 = BitmapFactory.decodeByteArray(encodeByte3, 0, encodeByte3.length);
 
-                        byte [] encodeByte4 = Base64.decode(mResult.getVTRText().get(3),DEFAULT);
+                        byte [] encodeByte4 = Base64.decode(mResult.getRecommendationText().get(3),DEFAULT);
                         Bitmap bitmap4 = BitmapFactory.decodeByteArray(encodeByte4, 0, encodeByte4.length);
 
-                        byte [] encodeByte5 = Base64.decode(mResult.getVTRText().get(4),DEFAULT);
+                        byte [] encodeByte5 = Base64.decode(mResult.getRecommendationText().get(4),DEFAULT);
                         Bitmap bitmap5 = BitmapFactory.decodeByteArray(encodeByte5, 0, encodeByte5.length);
 
                         recommendedImage1.setImageBitmap(bitmap1);
@@ -203,7 +203,7 @@ public class RecommendationFragment extends Fragment {
                         messageTextView.setText(text);
                         messageTextView.setVisibility(View.VISIBLE);
                         retryButton.setVisibility(View.VISIBLE);
-                        Log.i("Success Checking", mResult.getVTRError()+"");
+                        Log.i("Success Checking", mResult.getRecommendationError()+"");
 
                     }
 

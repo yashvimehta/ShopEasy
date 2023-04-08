@@ -1,6 +1,33 @@
 package com.example.beproject2023;
 
 import static android.content.ContentValues.TAG;
+import static android.content.Context.LOCATION_SERVICE;
+
+
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Bundle;
+import android.os.Looper;
+import android.provider.Settings;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -9,15 +36,24 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import android.os.Looper;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +73,11 @@ import com.example.beproject2023.ApiHelper.ApiInterface;
 import com.example.beproject2023.ClothInfo;
 import com.example.beproject2023.R;
 import com.example.beproject2023.SearchCardAdapter;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
@@ -70,15 +111,16 @@ public class SearchPageFragment extends Fragment {
     private static final int STORAGE_REQUEST = 7;
     private static final int SELECT_FILE = 8;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
-    public static final int DEFAULT=0;
-
+    int cam_or_gal=0;
+    int PERMISSION_ID = 44;
+    FusedLocationProviderClient mFusedLocationClient;
     EditText clothNameEditText;
     Uri currentImageUri;
     TextView text;
     FrameLayout frameLayout;
     Button searchButton;
     ListView clothListView;
-    ImageView cameraImageView , galleryImageView;
+    ImageView cameraImageView, galleryImageView;
     FirebaseFirestore db;
     FirebaseAuth firebaseAuth;
     SearchCardAdapter mCustomCardAdapter;
@@ -89,15 +131,15 @@ public class SearchPageFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_search_page, container, false);
 
         clothNameEditText = view.findViewById(R.id.clothNameEditText);
-        cameraImageView =  view.findViewById(R.id.cameraImageView1);
-        galleryImageView =  view.findViewById(R.id.galleryImageView1);
+        cameraImageView = view.findViewById(R.id.cameraImageView1);
+        galleryImageView = view.findViewById(R.id.galleryImageView1);
         text = (TextView) view.findViewById(R.id.textSearch);
         frameLayout = (FrameLayout) view.findViewById(R.id.frame);
-        searchButton=view.findViewById(R.id.searchButton);
-        clothListView=view.findViewById(R.id.clothListView);
+        searchButton = view.findViewById(R.id.searchButton);
+        clothListView = view.findViewById(R.id.clothListView);
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
-        db= FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
 
 
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -106,8 +148,7 @@ public class SearchPageFragment extends Fragment {
                 String searchName = clothNameEditText.getText().toString();
                 if (searchName.equals("")) {
                     Toast.makeText(getContext(), "Search name cannot be empty", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else {
                     try {
                         db.collection("clothes")
                                 .get()
@@ -115,30 +156,30 @@ public class SearchPageFragment extends Fragment {
                                     @Override
                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                         if (task.isSuccessful()) {
-                                            int val=0;
-                                            ArrayList<String[]> stringArrayList=new ArrayList<String[]>();
+                                            int val = 0;
+                                            ArrayList<String[]> stringArrayList = new ArrayList<String[]>();
                                             for (QueryDocumentSnapshot document : task.getResult()) {
                                                 String color = String.valueOf(document.getData().get("color"));
                                                 String pattern = String.valueOf(document.getData().get("pattern"));
                                                 Log.i("Color", color);
                                                 Log.i("Pattern", pattern);
-                                                String clothSearch  = searchName.toLowerCase();
+                                                String clothSearch = searchName.toLowerCase();
                                                 Log.i("Cloth Search", clothSearch);
-                                                if(clothSearch.contains(color) || clothSearch.contains(pattern)){
+                                                if (clothSearch.contains(color)) {
                                                     val++;
                                                     String price = String.valueOf(document.getData().get("price"));
                                                     String size = String.valueOf(document.getData().get("size"));
                                                     String image_name = String.valueOf(document.getData().get("image_name"));
                                                     String barcode = String.valueOf(document.getData().get("barcode"));
                                                     String in_stock = String.valueOf(document.getData().get("in_stock"));
-                                                    String[] arrayListFeeder=new String[]{StringFormatter.capitalizeWord(color), StringFormatter.capitalizeWord(pattern), price, size, image_name, barcode, in_stock};
+                                                    String[] arrayListFeeder = new String[]{StringFormatter.capitalizeWord(color), StringFormatter.capitalizeWord(pattern), price, size, image_name, barcode, in_stock};
                                                     stringArrayList.add(arrayListFeeder);
                                                 }
                                             }
                                             if (val == 0) {
                                                 Toast.makeText(getContext(), "No apparel found", Toast.LENGTH_SHORT).show();
                                             }
-                                            Log.i("Length",String.valueOf(stringArrayList.size()));
+                                            Log.i("Length", String.valueOf(stringArrayList.size()));
                                             mCustomCardAdapter = new SearchCardAdapter(requireContext(), stringArrayList);
                                             clothListView.setAdapter(mCustomCardAdapter);
                                             clothListView.setVisibility(View.VISIBLE);
@@ -169,37 +210,20 @@ public class SearchPageFragment extends Fragment {
         cameraImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (HomePage.contextOfApplication.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
-
-                    } else {
-                        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        startActivityForResult(cameraIntent, CAMERA_REQUEST);
-                    }
-                }
+                cam_or_gal=0;
+                mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+                getLastLocation();
             }
         });
 
         galleryImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (HomePage.contextOfApplication.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_REQUEST);
-
-                    } else {
-                        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        startActivityForResult(intent, SELECT_FILE);
-                    }
-                }
-
+                cam_or_gal=1;
+                mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+                getLastLocation();
             }
         });
-
-        // Inflate the layout for this fragment
         return view;
     }
 
@@ -207,29 +231,6 @@ public class SearchPageFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull final View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-    }
-
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_CAMERA_PERMISSION_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, CAMERA_REQUEST);
-
-            } else {
-                Toast.makeText(getActivity(), "Provide permission to access camera!", Toast.LENGTH_LONG).show();
-            }
-        }
-
-        if (requestCode == STORAGE_REQUEST) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, SELECT_FILE);
-
-            } else {
-                Toast.makeText(getActivity(), "Provide permission to access your images!", Toast.LENGTH_LONG).show();
-            }
-        }
     }
 
     public Uri saveBitmapImage(Context inContext, Bitmap inImage) {
@@ -372,7 +373,134 @@ public class SearchPageFragment extends Fragment {
         currentImageUri=imageLocation;
         getPredictionsFromServer();
     }
+    @SuppressLint("MissingPermission")
+    private void getLastLocation() {
+        if (checkPermissions()) {
+            if (isLocationEnabled()) {
+                final int[] val = {0};
+                mFusedLocationClient.getLastLocation().addOnCompleteListener(new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        Location location = task.getResult();
+                        if (location == null) {
+                            requestNewLocationData();
+                        } else {
+                            float[] distance = new float[1];
+                            Log.i("LATTTT1", String.valueOf(location.getLatitude()));
+                            Log.i("LONGGG1", String.valueOf(location.getLongitude()));
+                            Location.distanceBetween(location.getLatitude(),location.getLongitude(),
+                            19.22008747, 72.86325931, distance);
+                            double radiusInMeters = 500.0;
+                            if( distance[0] <= radiusInMeters ) {
+                                Log.i("Location", "Within radius");
+                                if(cam_or_gal==0){
+                                    Log.i("Start", "camera");
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                        if (HomePage.contextOfApplication.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                                            requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
 
+                                        } else {
+                                            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                            startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                                        }
+                                    }
+                                }
+                                else{
+                                    Log.i("Start", "gallery");
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                        if (HomePage.contextOfApplication.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_REQUEST);
 
+                                        } else {
+                                            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                                            startActivityForResult(intent, SELECT_FILE);
+                                        }
+                                    }
+                                }
+                            }
+                            else{
+                                Log.i("Location", "Outside radius");
+                                Toast.makeText(getContext(), "You are outside the store so you cant access this", Toast.LENGTH_SHORT).show();
 
+                            }
+                        }
+                    }
+                });
+            } else {
+                Log.i("TURN", "ON");
+            }
+        } else {
+            requestPermissions();
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void requestNewLocationData() {
+
+        // Initializing LocationRequest
+        // object with appropriate methods
+        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(5);
+        mLocationRequest.setFastestInterval(0);
+        mLocationRequest.setNumUpdates(1);
+
+        // setting LocationRequest
+        // on FusedLocationClient
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+    }
+
+    private LocationCallback mLocationCallback = new LocationCallback() {
+
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            Location mLastLocation = locationResult.getLastLocation();
+            Log.i("LATTTT2", String.valueOf( mLastLocation.getLatitude()));
+            Log.i("LONGGG2", String.valueOf(mLastLocation.getLongitude()));
+        }
+    };
+
+    private boolean checkPermissions() { // method to check for permissions
+        return ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestPermissions() { // method to request for permissions
+        ActivityCompat.requestPermissions(getActivity(), new String[]{
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ID);
+    }
+
+    private boolean isLocationEnabled() { // method to check if location is enabled
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_ID) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLastLocation();
+            }
+        }
+        if (requestCode == MY_CAMERA_PERMISSION_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+
+            } else {
+                Toast.makeText(getActivity(), "Provide permission to access camera!", Toast.LENGTH_LONG).show();
+            }
+        }
+
+        if (requestCode == STORAGE_REQUEST) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, SELECT_FILE);
+
+            } else {
+                Toast.makeText(getActivity(), "Provide permission to access your images!", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 }
