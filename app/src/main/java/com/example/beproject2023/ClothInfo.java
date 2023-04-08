@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -42,6 +43,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import static com.example.beproject2023.MainActivity.isAdmin;
 //import com.example.beproject2023.BgRemover;
@@ -110,6 +112,7 @@ public class ClothInfo extends AppCompatActivity {
         colorInputText = findViewById(R.id.colorInputText);
         patternInputText = findViewById(R.id.patternInputText);
         sizeInputText = findViewById(R.id.sizeInputText);
+
 
         textView2= findViewById(R.id.textView2);
         similarProducts = findViewById(R.id.similarProducts);
@@ -342,34 +345,43 @@ public class ClothInfo extends AppCompatActivity {
         recommendImageView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickRecommendation(image_name1);
+                BitmapDrawable drawable = (BitmapDrawable) recommendImageView1.getDrawable();
+                Bitmap bitmap = drawable.getBitmap();
+                onClickRecommendation(image_name1, bitmap);
             }
         });
         recommendImageView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickRecommendation(image_name2);
+                BitmapDrawable drawable = (BitmapDrawable) recommendImageView1.getDrawable();
+                Bitmap bitmap = drawable.getBitmap();
+                onClickRecommendation(image_name2, bitmap);
             }
         });
         recommendImageView3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickRecommendation(image_name3);
+                BitmapDrawable drawable = (BitmapDrawable) recommendImageView1.getDrawable();
+                Bitmap bitmap = drawable.getBitmap();
+                onClickRecommendation(image_name3, bitmap);
             }
         });
         recommendImageView4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickRecommendation(image_name4);
+                BitmapDrawable drawable = (BitmapDrawable) recommendImageView1.getDrawable();
+                Bitmap bitmap = drawable.getBitmap();
+                onClickRecommendation(image_name4, bitmap);
             }
         });
         recommendImageView5.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickRecommendation(image_name5);
+                BitmapDrawable drawable = (BitmapDrawable) recommendImageView1.getDrawable();
+                Bitmap bitmap = drawable.getBitmap();
+                onClickRecommendation(image_name5, bitmap);
             }
         });
-
     }
 
     @Override
@@ -558,6 +570,13 @@ public class ClothInfo extends AppCompatActivity {
                                 image_name3 = mResult.getRecommendationText().get(7);
                                 image_name4 = mResult.getRecommendationText().get(8);
                                 image_name5 = mResult.getRecommendationText().get(9);
+
+
+                                Log.i("Image1",image_name1);
+                                Log.i("Image2",image_name2);
+                                Log.i("Image3",image_name3);
+                                Log.i("Image4",image_name4);
+                                Log.i("Image5",image_name5);
                             } else {
                                 String text = "Failure";
                                 Log.i("Success Checking", mResult.getRecommendationError()+"");
@@ -599,7 +618,7 @@ public class ClothInfo extends AppCompatActivity {
 
     }
 
-    public void onClickRecommendation(String image_name){
+    public void onClickRecommendation(String image_name, Bitmap image){
         db.collection("clothes")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -611,6 +630,7 @@ public class ClothInfo extends AppCompatActivity {
                                 String image_name_1 = String.valueOf(document.getData().get("image_name"));
                                 if(image_name.equals(image_name_1)){
                                     val++;
+                                    //item already in db, just pass it to intent
                                     String color = String.valueOf(document.getData().get("color"));
                                     String pattern = String.valueOf(document.getData().get("pattern"));
                                     String price = String.valueOf(document.getData().get("price"));
@@ -618,29 +638,44 @@ public class ClothInfo extends AppCompatActivity {
                                     String barcode = String.valueOf(document.getData().get("barcode"));
                                     String in_stock = String.valueOf(document.getData().get("in_stock"));
                                     String [] clothData1 = new String[]{color, pattern, price ,size , image_name , barcode , in_stock};
-                                    Intent intent = new Intent(ClothInfo.contextOfApplication, ClothInfo.class);
+                                    Intent intent = new Intent(getApplicationContext(), ClothInfo.class);
                                     intent.putExtra("clothData", clothData1);
                                     startActivity(intent);
 
                                 }
                             }
                             if(val==0){
-                                //add the item
+                                //item not present in db, so add the item
                                 Map<String, Object> mMap = new HashMap<>();
-                                mMap.put("barcode","");
+                                mMap.put("barcode","4005404003028");
                                 mMap.put("size", "S M L");
                                 mMap.put("price", "400");
                                 mMap.put("pattern", "Sleeves");
-                                mMap.put("color", "Black");
+                                mMap.put("color", "Red");
                                 mMap.put("in_stock", "3");
                                 mMap.put("image_name", image_name);
                                 db.collection("clothes").add(mMap);
-                                String [] clothData1 = new String[]{"Black", "Sleeves", "400" ,"S M L" , image_name , "" , "3"};
+                                String [] clothData1 = new String[]{"Black", "Sleeves", "400" ,"S M L" , image_name , "4005404003028" , "3"};
 
-                                //todo add to storage
-                                Intent intent = new Intent(ClothInfo.contextOfApplication, ClothInfo.class);
-                                intent.putExtra("clothData", clothData1);
-                                startActivity(intent);
+                                //add to storage
+                                storage = FirebaseStorage.getInstance().getReference().child("cloth_images/" + image_name);
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                                byte[] data = baos.toByteArray();
+
+                                UploadTask uploadTask = storage.putBytes(data);
+                                uploadTask.addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception exception) {
+                                    }
+                                }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                        Intent intent = new Intent(getApplicationContext(), ClothInfo.class);
+                                        intent.putExtra("clothData", clothData1);
+                                        startActivity(intent);
+                                    }
+                                });
                             }
                         } else {
                             Log.i("Error", "Error getting documents");
