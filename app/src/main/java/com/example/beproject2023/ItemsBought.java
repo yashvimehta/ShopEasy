@@ -48,7 +48,7 @@ public class ItemsBought extends Fragment {
     ListView mListView;
     StorageReference storage;
     FirebaseUser user;
-    UserCustomCardAdapter mUserCustomCardAdapter;
+    ItemsBoughtCustomCardAdapter mUserCustomCardAdapter;
     final String[] memberid = new String[1];
     final String[] vall = new String[2];
     int perDayFine;
@@ -62,13 +62,13 @@ public class ItemsBought extends Fragment {
     @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_cart_item, container, false);
-        mListView = view.findViewById(R.id.cartItems);
+        final View view = inflater.inflate(R.layout.fragment_items_bought, container, false);
+        mListView = view.findViewById(R.id.itemsBought);
         firebaseAuth = FirebaseAuth.getInstance();
         db= FirebaseFirestore.getInstance();
 
         try {
-            db.collection("cart")
+            db.collection("itemsBought")
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
@@ -82,6 +82,7 @@ public class ItemsBought extends Fragment {
                                     if(useruid.equals(user.getUid())){
                                         String size =  String.valueOf(document.getData().get("size"));
                                         String barcode = String.valueOf(document.getData().get("barcode"));
+                                        Log.i("hey there", "kk");
 
                                         db.collection("clothes")
                                                 .get()
@@ -99,7 +100,7 @@ public class ItemsBought extends Fragment {
                                                                     String image_name = String.valueOf(document.getData().get("image_name"));
                                                                     String[] arrayListFeeder=new String[]{StringFormatter.capitalizeWord(color), StringFormatter.capitalizeWord(pattern), price, size, image_name, barcode};
                                                                     stringArrayList.add(arrayListFeeder);
-                                                                    mUserCustomCardAdapter = new UserCustomCardAdapter(requireContext(), stringArrayList);
+                                                                    mUserCustomCardAdapter = new ItemsBoughtCustomCardAdapter(requireContext(), stringArrayList);
                                                                     mListView.setAdapter(mUserCustomCardAdapter);
                                                                     mListView.setVisibility(View.VISIBLE);
 
