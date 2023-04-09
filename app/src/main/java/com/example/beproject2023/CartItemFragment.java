@@ -2,6 +2,8 @@ package com.example.beproject2023;
 
 import static android.content.ContentValues.TAG;
 
+import static com.example.beproject2023.UserCustomCardAdapter.buyAllTransact;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -42,6 +44,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 
+
+
 public class CartItemFragment extends Fragment {
 
     FirebaseFirestore db;
@@ -73,7 +77,7 @@ public class CartItemFragment extends Fragment {
         buyAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                buyAllTransact();
             }
         });
 

@@ -48,17 +48,17 @@ import java.util.Map;
 
 public class UserCustomCardAdapter extends ArrayAdapter<String[]>  {
 
-    Context mContext;
-    ArrayList<String[]>mArrayList;
+    static Context mContext;
+    static ArrayList<String[]>mArrayList;
     Button buyNow;
     FirebaseFirestore db;
     TextView clothName, clothDesc;
     StorageReference storage;
     FirebaseAuth firebaseAuth;
 
-    public static String transact_document_id;
-    public static String transact_barcode;
-    public static String transact_size;
+    public static ArrayList<String> transact_document_id = new ArrayList<String>();
+    public static ArrayList<String> transact_barcode = new ArrayList<String>();
+    public static ArrayList<String> transact_size = new ArrayList<String>();
     public static String rzpID;
     public static Button rzpButton;
     public UserCustomCardAdapter(@NonNull Context context, ArrayList<String[]> stringArrayList) {
@@ -106,11 +106,15 @@ public class UserCustomCardAdapter extends ArrayAdapter<String[]>  {
             e.printStackTrace();
         }
 
+
         buyNow = view.findViewById(R.id.buyNow);
         buyNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                transact(Integer.parseInt(mArrayList.get(position)[2]),mArrayList.get(position)[6],  mArrayList.get(position)[5], mArrayList.get(position)[3]);
+                transact_document_id.add(mArrayList.get(position)[6]);
+                transact_barcode.add(mArrayList.get(position)[5]);
+                transact_size.add(mArrayList.get(position)[3]);
+                transact(Integer.parseInt(mArrayList.get(position)[2]));
 
 
             }
@@ -118,11 +122,7 @@ public class UserCustomCardAdapter extends ArrayAdapter<String[]>  {
 
         return view;
     }
-    public void transact(int amount, String card_document_id, String barcode_cloth, String size){
-        transact_document_id = card_document_id;
-        transact_barcode = barcode_cloth;
-        transact_size = size;
-
+    public static void transact(int amount){
         // initialize Razorpay account.
         Checkout checkout = new Checkout();
         checkout.setKeyID("rzp_test_nNQTEixTzHLBjc");
@@ -143,6 +143,14 @@ public class UserCustomCardAdapter extends ArrayAdapter<String[]>  {
         }
     }
 
-
-
+    public static void buyAllTransact(){
+        int sumAmount=0;
+        for(int i=0;i<mArrayList.size(); i++){
+            sumAmount+=Integer.parseInt(mArrayList.get(i)[2]);
+            transact_document_id.add(mArrayList.get(i)[6]);
+            transact_barcode.add(mArrayList.get(i)[5]);
+            transact_size.add(mArrayList.get(i)[3]);
+        }
+        transact(sumAmount);
+    }
 }

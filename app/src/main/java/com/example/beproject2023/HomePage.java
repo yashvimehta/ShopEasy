@@ -73,36 +73,40 @@ public class HomePage extends AppCompatActivity implements PaymentResultWithData
     @Override
     public void onPaymentSuccess(String s, PaymentData paymentData) {
         // decrement in_stock by 1 for that cloth
-        db.collection("clothes")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        int val = 0;
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                String barcode1 = String.valueOf(document.getData().get("barcode"));
-                                String in_stock = String.valueOf(document.getData().get("in_stock"));
-                                if(barcode1.equals(transact_barcode)){
-                                    db.collection("clothes").document(document.getId()).update("in_stock", Integer.parseInt(in_stock)-1);
+        for(int j=0;j<transact_barcode.size();j++){
+            int finalJ = j;
+            db.collection("clothes")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            int val = 0;
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    String barcode1 = String.valueOf(document.getData().get("barcode"));
+                                    String in_stock = String.valueOf(document.getData().get("in_stock"));
+                                    if(barcode1.equals(transact_barcode.get(finalJ))){
+                                        db.collection("clothes").document(document.getId()).update("in_stock", Integer.parseInt(in_stock)-1);
 
+                                    }
                                 }
+                            } else {
+                                Log.d(TAG, "Error getting documents: ", task.getException());
                             }
-                        } else {
-                            Log.d(TAG, "Error getting documents: ", task.getException());
                         }
-                    }
-                });
+                    });
 
-        //delete from cart
-        db.collection("cart").document(transact_document_id).delete();
+            //delete from cart
+            db.collection("cart").document(transact_document_id.get(j)).delete();
 
-        //add to itemsBought collection
-        Map<String, Object> mMap = new HashMap<>();
-        mMap.put("barcode",transact_barcode);
-        mMap.put("size",transact_size);
-        mMap.put("useruid", firebaseAuth.getCurrentUser().getUid());
-        db.collection("itemsBought").add(mMap);
+            //add to itemsBought collection
+            Map<String, Object> mMap = new HashMap<>();
+            mMap.put("barcode",transact_barcode.get(j));
+            mMap.put("size",transact_size.get(j));
+            mMap.put("useruid", firebaseAuth.getCurrentUser().getUid());
+            db.collection("itemsBought").add(mMap);
+        }
+
 
         //todo malhar mail
 
