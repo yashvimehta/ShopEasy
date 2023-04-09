@@ -80,7 +80,7 @@ public class ItemsBought extends Fragment {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     String useruid = String.valueOf(document.getData().get("useruid"));
                                     if(useruid.equals(user.getUid())){
-                                        String size =  String.valueOf(document.getData().get("size"));
+                                        String sizee =  String.valueOf(document.getData().get("size"));
                                         String barcode = String.valueOf(document.getData().get("barcode"));
                                         Log.i("hey there", "kk");
 
@@ -99,7 +99,7 @@ public class ItemsBought extends Fragment {
                                                                     String price = String.valueOf(document.getData().get("price"));
                                                                     String size =  String.valueOf(document.getData().get("size"));
                                                                     String image_name = String.valueOf(document.getData().get("image_name"));
-                                                                    String[] arrayListFeeder=new String[]{StringFormatter.capitalizeWord(color), StringFormatter.capitalizeWord(pattern), price, size, image_name, barcode};
+                                                                    String[] arrayListFeeder=new String[]{StringFormatter.capitalizeWord(color), StringFormatter.capitalizeWord(pattern), price, sizee, image_name, barcode};
                                                                     stringArrayList.add(arrayListFeeder);
                                                                     mUserCustomCardAdapter = new ItemsBoughtCustomCardAdapter(requireContext(), stringArrayList);
                                                                     mListView.setAdapter(mUserCustomCardAdapter);

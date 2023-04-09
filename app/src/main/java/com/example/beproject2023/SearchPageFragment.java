@@ -124,6 +124,7 @@ public class SearchPageFragment extends Fragment {
     FirebaseFirestore db;
     FirebaseAuth firebaseAuth;
     SearchCardAdapter mCustomCardAdapter;
+    public static boolean LocIn=false;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -140,6 +141,9 @@ public class SearchPageFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
         db = FirebaseFirestore.getInstance();
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        getLastLocation();
 
 
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -210,7 +214,7 @@ public class SearchPageFragment extends Fragment {
         cameraImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cam_or_gal=0;
+                cam_or_gal=1;
                 mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
                 getLastLocation();
             }
@@ -219,7 +223,7 @@ public class SearchPageFragment extends Fragment {
         galleryImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cam_or_gal=1;
+                cam_or_gal=2;
                 mFusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
                 getLastLocation();
             }
@@ -393,7 +397,8 @@ public class SearchPageFragment extends Fragment {
                             double radiusInMeters = 500.0;
                             if( distance[0] <= radiusInMeters ) {
                                 Log.i("Location", "Within radius");
-                                if(cam_or_gal==0){
+                                LocIn=true;
+                                if(cam_or_gal==1){
                                     Log.i("Start", "camera");
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                         if (HomePage.contextOfApplication.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -405,7 +410,7 @@ public class SearchPageFragment extends Fragment {
                                         }
                                     }
                                 }
-                                else{
+                                else if(cam_or_gal==2){
                                     Log.i("Start", "gallery");
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                         if (HomePage.contextOfApplication.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -419,9 +424,11 @@ public class SearchPageFragment extends Fragment {
                                 }
                             }
                             else{
+                                LocIn=false;
                                 Log.i("Location", "Outside radius");
-                                Toast.makeText(getContext(), "You are outside the store so you cant access this", Toast.LENGTH_SHORT).show();
-
+                                if(cam_or_gal==1 || cam_or_gal==2){
+                                    Toast.makeText(getContext(), "You are outside the store so you cant access this", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
                     }

@@ -1,4 +1,7 @@
 package com.example.beproject2023;
+import static android.content.ContentValues.TAG;
+import static com.example.beproject2023.SearchPageFragment.LocIn;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -24,6 +27,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,6 +39,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class AdminHomePage extends AppCompatActivity {
 

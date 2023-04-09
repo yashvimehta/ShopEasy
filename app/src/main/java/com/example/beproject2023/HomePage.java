@@ -1,4 +1,10 @@
 package com.example.beproject2023;
+import static android.content.ContentValues.TAG;
+import static com.example.beproject2023.SearchPageFragment.LocIn;
+import static com.example.beproject2023.UserCustomCardAdapter.transact_document_id;
+import static com.example.beproject2023.UserCustomCardAdapter.transact_barcode;
+import static com.example.beproject2023.UserCustomCardAdapter.transact_size;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
@@ -24,6 +30,10 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.razorpay.PaymentData;
+import com.razorpay.PaymentResultWithDataListener;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,10 +44,13 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
-public class HomePage extends AppCompatActivity {
+public class HomePage extends AppCompatActivity implements PaymentResultWithDataListener {
 
     public static Context contextOfApplication;
+    FirebaseFirestore db;
+    FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +61,8 @@ public class HomePage extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(1);
         contextOfApplication = getApplicationContext();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -56,5 +70,52 @@ public class HomePage extends AppCompatActivity {
         super.onBackPressed();
         finish();
     }
+    @Override
+    public void onPaymentSuccess(String s, PaymentData paymentData) {
+        // decrement in_stock by 1 for that cloth
+        db.collection("clothes")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        int val = 0;
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String barcode1 = String.valueOf(document.getData().get("barcode"));
+                                String in_stock = String.valueOf(document.getData().get("in_stock"));
+                                if(barcode1.equals(transact_barcode)){
+                                    db.collection("clothes").document(document.getId()).update("in_stock", Integer.parseInt(in_stock)-1);
 
+                                }
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
+                    }
+                });
+
+        //delete from cart
+        db.collection("cart").document(transact_document_id).delete();
+
+        //add to itemsBought collection
+        Map<String, Object> mMap = new HashMap<>();
+        mMap.put("barcode",transact_barcode);
+        mMap.put("size",transact_size);
+        mMap.put("useruid", firebaseAuth.getCurrentUser().getUid());
+        db.collection("itemsBought").add(mMap);
+
+        //todo malhar mail
+
+        if(LocIn){
+            Toast.makeText(HomePage.this, "Bill has been mailed to you, please show it at the counter", Toast.LENGTH_SHORT).show();
+        }
+        else{
+            Toast.makeText(HomePage.this, "Your items will be delivered to you soon", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onPaymentError(int i, String s, PaymentData paymentData) {
+
+    }
 }

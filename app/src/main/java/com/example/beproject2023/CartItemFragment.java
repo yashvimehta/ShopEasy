@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -49,6 +50,7 @@ public class CartItemFragment extends Fragment {
     StorageReference storage;
     FirebaseUser user;
     UserCustomCardAdapter mUserCustomCardAdapter;
+    Button buyAll;
     final String[] memberid = new String[1];
     final String[] vall = new String[2];
     int perDayFine;
@@ -66,6 +68,14 @@ public class CartItemFragment extends Fragment {
         mListView = view.findViewById(R.id.cartItems);
         firebaseAuth = FirebaseAuth.getInstance();
         db= FirebaseFirestore.getInstance();
+        buyAll = view.findViewById(R.id.buyAll);
+
+        buyAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         try {
             db.collection("cart")
@@ -81,7 +91,7 @@ public class CartItemFragment extends Fragment {
                                     String ss = document.getId();
                                     String useruid = String.valueOf(document.getData().get("useruid"));
                                     if(useruid.equals(user.getUid())){
-                                        String size =  String.valueOf(document.getData().get("size"));
+                                        String sizee =  String.valueOf(document.getData().get("size"));
                                         String barcode = String.valueOf(document.getData().get("barcode"));
 
                                         db.collection("clothes")
@@ -98,7 +108,7 @@ public class CartItemFragment extends Fragment {
                                                                     String pattern = String.valueOf(document.getData().get("pattern"));
                                                                     String price = String.valueOf(document.getData().get("price"));
                                                                     String image_name = String.valueOf(document.getData().get("image_name"));
-                                                                    String[] arrayListFeeder=new String[]{StringFormatter.capitalizeWord(color), StringFormatter.capitalizeWord(pattern), price, size, image_name, barcode, ss};
+                                                                    String[] arrayListFeeder=new String[]{StringFormatter.capitalizeWord(color), StringFormatter.capitalizeWord(pattern), price, sizee, image_name, barcode, ss};
                                                                     stringArrayList.add(arrayListFeeder);
                                                                     mUserCustomCardAdapter = new UserCustomCardAdapter(requireContext(), stringArrayList);
                                                                     mListView.setAdapter(mUserCustomCardAdapter);
