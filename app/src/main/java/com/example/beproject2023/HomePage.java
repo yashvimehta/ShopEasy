@@ -1,6 +1,9 @@
 package com.example.beproject2023;
 import static android.content.ContentValues.TAG;
 import static com.example.beproject2023.SearchPageFragment.LocIn;
+import static com.example.beproject2023.UserCustomCardAdapter.itemm;
+import static com.example.beproject2023.UserCustomCardAdapter.price;
+import static com.example.beproject2023.UserCustomCardAdapter.quantity;
 import static com.example.beproject2023.UserCustomCardAdapter.transact_document_id;
 import static com.example.beproject2023.UserCustomCardAdapter.transact_barcode;
 import static com.example.beproject2023.UserCustomCardAdapter.transact_size;
@@ -19,9 +22,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.beproject2023.ApiHelper.ApiInterface;
+import com.example.beproject2023.ApiHelper.BarcodeResult;
+import com.example.beproject2023.ApiHelper.Billing;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,6 +52,14 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomePage extends AppCompatActivity implements PaymentResultWithDataListener {
 
@@ -80,7 +95,6 @@ public class HomePage extends AppCompatActivity implements PaymentResultWithData
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            int val = 0;
                             if (task.isSuccessful()) {
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     String barcode1 = String.valueOf(document.getData().get("barcode"));
@@ -95,7 +109,6 @@ public class HomePage extends AppCompatActivity implements PaymentResultWithData
                             }
                         }
                     });
-
             //delete from cart
             db.collection("cart").document(transact_document_id.get(j)).delete();
 
@@ -105,13 +118,40 @@ public class HomePage extends AppCompatActivity implements PaymentResultWithData
             mMap.put("size",transact_size.get(j));
             mMap.put("useruid", firebaseAuth.getCurrentUser().getUid());
             db.collection("itemsBought").add(mMap);
+            Log.i("pppp11111", "kkk1111");
         }
+        final OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .readTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(60, TimeUnit.SECONDS)
+                .build();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(ApiInterface.BASE_URL_PREDICTOR)
+                .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
+                .build();
+        ApiInterface apiInterface = retrofit.create(ApiInterface.class);
+        Log.i("pooo",  String.join(",", itemm));
+        Call<Billing> mCall = apiInterface.sendMail("yashvimehta45@gmail.com", String.join(",", itemm),String.join(",", quantity),String.join(",", price));
+        mCall.enqueue(new Callback<Billing>() {
+            @Override
+            public void onResponse(Call<Billing> call, Response<Billing> response) {
+                Billing mResult = response.body();
+                if (mResult.getGeneralSuccess()) {
+                } else {
+                    String text = "Failure";
 
+                }
+            }
 
-        //todo malhar mail
+            @Override
+            public void onFailure(Call<Billing> call, Throwable t) {
+
+            }
+        });
 
         if(LocIn){
             Toast.makeText(HomePage.this, "Bill has been mailed to you, please show it at the counter", Toast.LENGTH_SHORT).show();
+
         }
         else{
             Toast.makeText(HomePage.this, "Your items will be delivered to you soon", Toast.LENGTH_SHORT).show();

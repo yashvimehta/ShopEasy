@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.beproject2023.ApiHelper.ApiInterface;
+import com.example.beproject2023.ApiHelper.Billing;
 import com.razorpay.PaymentData;
 import com.razorpay.PaymentResultListener;
 
@@ -45,16 +47,28 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UserCustomCardAdapter extends ArrayAdapter<String[]>  {
 
     static Context mContext;
     static ArrayList<String[]>mArrayList;
     Button buyNow;
-    FirebaseFirestore db;
+    static FirebaseFirestore db;
     TextView clothName, clothDesc;
     StorageReference storage;
     FirebaseAuth firebaseAuth;
+
+    public static ArrayList<String> itemm = new ArrayList<String>();
+    public static ArrayList<String> quantity = new ArrayList<String>();
+    public static ArrayList<String> price = new ArrayList<String>();
 
     public static ArrayList<String> transact_document_id = new ArrayList<String>();
     public static ArrayList<String> transact_barcode = new ArrayList<String>();
@@ -111,11 +125,44 @@ public class UserCustomCardAdapter extends ArrayAdapter<String[]>  {
         buyNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                transact_document_id.removeAll(transact_document_id);
+                transact_barcode.removeAll(transact_barcode);
+                transact_size.removeAll(transact_size);
+                price.removeAll(price);
+                quantity.removeAll(quantity);
+                itemm.removeAll(itemm);
                 transact_document_id.add(mArrayList.get(position)[6]);
                 transact_barcode.add(mArrayList.get(position)[5]);
                 transact_size.add(mArrayList.get(position)[3]);
-                transact(Integer.parseInt(mArrayList.get(position)[2]));
+                for(int j=0;j<transact_barcode.size();j++) {
+                    int finalJ = j;
+                    quantity.add("1");
+                    db.collection("clothes")
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            String barcode1 = String.valueOf(document.getData().get("barcode"));
+                                            String in_stock = String.valueOf(document.getData().get("in_stock"));
+                                            String color = String.valueOf(document.getData().get("color"));
+                                            String pattern = String.valueOf(document.getData().get("pattern"));
+                                            String pricee = String.valueOf(document.getData().get("price"));
+                                            if (barcode1.equals(transact_barcode.get(finalJ))) {
+                                                price.add(pricee);
+                                                itemm.add(color + " " + pattern);
+                                                db.collection("clothes").document(document.getId()).update("in_stock", Integer.parseInt(in_stock) - 1);
 
+                                            }
+                                        }
+                                    } else {
+                                        Log.d(TAG, "Error getting documents: ", task.getException());
+                                    }
+                                }
+                            });
+                }
+                transact(Integer.parseInt(mArrayList.get(position)[2]));
 
             }
         });
@@ -137,6 +184,7 @@ public class UserCustomCardAdapter extends ArrayAdapter<String[]>  {
             object.put("currency", "INR");
             object.put("amount", amount*100);
             checkout.open((Activity)mContext, object);
+            Toast.makeText(mContext, "hey theree!!!!", Toast.LENGTH_SHORT).show();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -145,11 +193,45 @@ public class UserCustomCardAdapter extends ArrayAdapter<String[]>  {
 
     public static void buyAllTransact(){
         int sumAmount=0;
+        transact_document_id.removeAll(transact_document_id);
+        transact_barcode.removeAll(transact_barcode);
+        transact_size.removeAll(transact_size);
+        price.removeAll(price);
+        quantity.removeAll(quantity);
+        itemm.removeAll(itemm);
         for(int i=0;i<mArrayList.size(); i++){
             sumAmount+=Integer.parseInt(mArrayList.get(i)[2]);
             transact_document_id.add(mArrayList.get(i)[6]);
             transact_barcode.add(mArrayList.get(i)[5]);
             transact_size.add(mArrayList.get(i)[3]);
+        }
+        for(int j=0;j<transact_barcode.size();j++) {
+            int finalJ = j;
+            quantity.add("1");
+            db.collection("clothes")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    String barcode1 = String.valueOf(document.getData().get("barcode"));
+                                    String in_stock = String.valueOf(document.getData().get("in_stock"));
+                                    String color = String.valueOf(document.getData().get("color"));
+                                    String pattern = String.valueOf(document.getData().get("pattern"));
+                                    String pricee = String.valueOf(document.getData().get("price"));
+                                    if (barcode1.equals(transact_barcode.get(finalJ))) {
+                                        price.add(pricee);
+                                        itemm.add(color + " " + pattern);
+                                        db.collection("clothes").document(document.getId()).update("in_stock", Integer.parseInt(in_stock) - 1);
+
+                                    }
+                                }
+                            } else {
+                                Log.d(TAG, "Error getting documents: ", task.getException());
+                            }
+                        }
+                    });
         }
         transact(sumAmount);
     }

@@ -38,6 +38,9 @@ public interface ApiInterface {
     @Multipart
     @POST("recommend")
     Call<RecommendationResult> sendRecImage(@Part MultipartBody.Part image );
+
+    @GET("mail")
+    Call<Billing> sendMail(@Query("recipient")  String recipient, @Query("item")  String item, @Query("qty")  String qty, @Query("cost") String cost);
 }
 
 
