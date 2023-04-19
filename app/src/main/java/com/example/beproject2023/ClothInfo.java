@@ -171,10 +171,14 @@ public class ClothInfo extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        colorInputText.setText(clothData[0]);
-        sizeInputText.setText(clothData[3]);
-        patternInputText.setText(clothData[1]);
-        priceInputText.setText(clothData[2]);
+        String textString = "<b>Color: </b>"+ clothData[0];
+        colorInputText.setText(Html.fromHtml(textString));
+        textString="<b>Sizes: </b>"+ clothData[3].replace(" ",", ");
+        sizeInputText.setText(Html.fromHtml(textString));
+        textString="<b>Pattern: </b>"+ clothData[1];
+        patternInputText.setText(Html.fromHtml(textString));
+        textString="<b>Price: </b>\u20B9"+ clothData[2];
+        priceInputText.setText(Html.fromHtml(textString));
         inStockInputText.setText(clothData[6]);
 
         //get user image

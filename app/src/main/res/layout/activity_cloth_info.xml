@@ -4,43 +4,91 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
+    android:fillViewport="false"
     android:orientation="vertical"
-    android:padding="10dp"
-    android:fillViewport="false">
-<FrameLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bgimage"
-    android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar">
+    android:padding="0dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/bgimage"
+        android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/noOfCopiesTextInputLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/edittext_border"
-            android:paddingLeft="5dp"
-            android:paddingTop="5dp"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#FFFFFFFF"
-            android:visibility="visible"
-            app:boxBackgroundMode="none"
-            app:hintTextColor="#FFFFFF"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/thumbnailImageView">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/noOfCopiesTextInputLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/edittext_border"
+                android:paddingLeft="5dp"
+                android:paddingTop="5dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#FFFFFFFF"
+                android:visibility="visible"
+                app:boxBackgroundMode="none"
+                app:hintTextColor="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/thumbnailImageView">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inStockInputText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:hint="In stock"
+                    android:inputType="none"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="5dp"
+                    android:text="loading..."
+                    android:textColor="#FFFFFF"
+                    tools:ignore="TouchTargetSizeCheck" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/titleTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:gravity="center"
+                android:text="Product Title"
+                android:textColor="#FFFFFF"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/thumbnailImageView"
+                android:layout_width="166dp"
+                android:layout_height="142dp"
+                android:layout_marginTop="16dp"
+                android:background="@null"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/titleTextView"
+                app:srcCompat="@drawable/loading" />
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/inStockInputText"
-                android:layout_width="match_parent"
+                android:id="@+id/colorInputText"
+                android:layout_width="242dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:layout_weight="1"
                 android:background="@null"
                 android:hint="In stock"
                 android:inputType="none"
@@ -50,296 +98,206 @@
                 android:paddingBottom="5dp"
                 android:text="loading..."
                 android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/noOfCopiesTextInputLayout"
                 tools:ignore="TouchTargetSizeCheck" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/sizeInputText"
+                android:layout_width="242dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="In stock"
+                android:inputType="none"
+                android:paddingLeft="5dp"
+                android:paddingTop="5dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="5dp"
+                android:text="loading..."
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/colorInputText"
+                tools:ignore="TouchTargetSizeCheck" />
 
-        <TextView
-            android:id="@+id/titleTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="32dp"
-            android:gravity="center"
-            android:text="Product Title"
-            android:textColor="#FFFFFF"
-            android:textSize="25sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/patternInputText"
+                android:layout_width="242dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="In stock"
+                android:inputType="none"
+                android:paddingLeft="5dp"
+                android:paddingTop="5dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="5dp"
+                android:text="loading..."
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/sizeInputText"
+                tools:ignore="TouchTargetSizeCheck" />
 
-        <ImageView
-            android:id="@+id/thumbnailImageView"
-            android:layout_width="166dp"
-            android:layout_height="142dp"
-            android:layout_marginTop="16dp"
-            android:background="@null"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/titleTextView"
-            app:srcCompat="@drawable/loading" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/priceInputText"
+                android:layout_width="242dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="In stock"
+                android:inputType="none"
+                android:paddingLeft="5dp"
+                android:paddingTop="5dp"
+                android:paddingRight="5dp"
+                android:paddingBottom="5dp"
+                android:text="loading..."
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/patternInputText"
+                tools:ignore="TouchTargetSizeCheck" />
 
-        <TextView
-            android:id="@+id/colorTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
-            android:text="Color"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/noOfCopiesTextInputLayout" />
+            <Button
+                android:id="@+id/VTRButton"
+                android:layout_width="146dp"
+                android:layout_height="52dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="48dp"
+                android:background="@drawable/custom_button"
+                android:text="Try on Virtually"
+                android:textColor="#FFFFFF"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/colorInputText"
-            android:layout_width="242dp"
-            android:layout_height="23dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="24dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:hint="In stock"
-            android:inputType="none"
-            android:paddingLeft="5dp"
-            android:paddingTop="5dp"
-            android:paddingRight="5dp"
-            android:paddingBottom="5dp"
-            android:text="loading..."
-            android:textColor="#FFFFFF"
-            android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@+id/colorTextView"
-            app:layout_constraintTop_toBottomOf="@+id/noOfCopiesTextInputLayout"
-            tools:ignore="TouchTargetSizeCheck" />
+            <Button
+                android:id="@+id/addToCartButton"
+                android:layout_width="152dp"
+                android:layout_height="53dp"
+                android:layout_marginTop="48dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/custom_button"
+                android:text="Add to Cart"
+                android:textColor="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/sizeInputText"
-            android:layout_width="242dp"
-            android:layout_height="23dp"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="60dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:hint="In stock"
-            android:inputType="none"
-            android:paddingLeft="5dp"
-            android:paddingTop="5dp"
-            android:paddingRight="5dp"
-            android:paddingBottom="5dp"
-            android:text="loading..."
-            android:textColor="#FFFFFF"
-            android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@+id/colorTextView"
-            app:layout_constraintTop_toBottomOf="@+id/noOfCopiesTextInputLayout"
-            tools:ignore="TouchTargetSizeCheck" />
+            <Button
+                android:id="@+id/saveChangesButton"
+                android:layout_width="152dp"
+                android:layout_height="53dp"
+                android:layout_marginTop="48dp"
+                android:background="@drawable/custom_button"
+                android:text="Save Changes"
+                android:textColor="#FFFFFF"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/patternInputText"
-            android:layout_width="242dp"
-            android:layout_height="23dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="96dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:hint="In stock"
-            android:inputType="none"
-            android:paddingLeft="5dp"
-            android:paddingTop="5dp"
-            android:paddingRight="5dp"
-            android:paddingBottom="5dp"
-            android:text="loading..."
-            android:textColor="#FFFFFF"
-            android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@+id/colorTextView"
-            app:layout_constraintTop_toBottomOf="@+id/noOfCopiesTextInputLayout"
-            tools:ignore="TouchTargetSizeCheck" />
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="160dp"
+                android:layout_height="33dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="17dp"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="#FFFFFF"
+                android:dropDownSelector="#FFFFFF"
+                android:popupBackground="#a64dff"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.54"
+                app:layout_constraintStart_toEndOf="@+id/textView2"
+                app:layout_constraintTop_toBottomOf="@+id/priceInputText" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/priceInputText"
-            android:layout_width="242dp"
-            android:layout_height="23dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="128dp"
-            android:layout_weight="1"
-            android:background="@null"
-            android:hint="In stock"
-            android:inputType="none"
-            android:paddingLeft="5dp"
-            android:paddingTop="5dp"
-            android:paddingRight="5dp"
-            android:paddingBottom="5dp"
-            android:text="loading..."
-            android:textColor="#FFFFFF"
-            android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@+id/colorTextView"
-            app:layout_constraintTop_toBottomOf="@+id/noOfCopiesTextInputLayout"
-            tools:ignore="TouchTargetSizeCheck" />
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:padding="5dp"
+                android:text="Choose a size for you"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/priceInputText" />
 
-        <TextView
-            android:id="@+id/patternTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="Pattern"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sizeTextView" />
+            <TextView
+                android:id="@+id/similarProducts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="25dp"
+                android:text="Similar Products"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/saveChangesButton" />
 
-        <TextView
-            android:id="@+id/priceTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="48dp"
-            android:text="Price"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sizeTextView" />
+            <ImageView
+                android:id="@+id/recommendImageView1"
+                android:layout_width="170dp"
+                android:layout_height="131dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="30dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/similarProducts"
+                tools:srcCompat="@tools:sample/avatars" />
 
-        <TextView
-            android:id="@+id/sizeTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:text="Size"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/colorTextView" />
+            <ImageView
+                android:id="@+id/recommendImageView2"
+                android:layout_width="170dp"
+                android:layout_height="131dp"
+                android:layout_marginStart="220dp"
+                android:layout_marginTop="30dp"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/similarProducts"
+                tools:srcCompat="@tools:sample/avatars" />
 
-        <Button
-            android:id="@+id/VTRButton"
-            android:layout_width="146dp"
-            android:layout_height="52dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="128dp"
-            android:background="@drawable/custom_button"
-            android:text="Try on Virtually"
-            android:textColor="#FFFFFF"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/priceTextView" />
+            <ImageView
+                android:id="@+id/recommendImageView3"
+                android:layout_width="170dp"
+                android:layout_height="131dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="17dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/recommendImageView1"
+                tools:layout_editor_absoluteY="591dp"
+                tools:srcCompat="@tools:sample/avatars" />
 
-        <Button
-            android:id="@+id/addToCartButton"
-            android:layout_width="152dp"
-            android:layout_height="53dp"
-            android:layout_marginStart="240dp"
-            android:layout_marginTop="128dp"
-            android:background="@drawable/custom_button"
-            android:text="Add to Cart"
-            android:textColor="#FFFFFF"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/priceTextView" />
+            <ImageView
+                android:id="@+id/recommendImageView4"
+                android:layout_width="170dp"
+                android:layout_height="131dp"
+                android:layout_marginStart="220dp"
+                android:layout_marginTop="17dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/recommendImageView1"
+                tools:srcCompat="@tools:sample/avatars" />
 
-        <Button
-            android:id="@+id/saveChangesButton"
-            android:layout_width="152dp"
-            android:layout_height="53dp"
-            android:layout_marginStart="120dp"
-            android:layout_marginTop="128dp"
-            android:background="@drawable/custom_button"
-            android:text="Save Changes"
-            android:textColor="#FFFFFF"
-            android:visibility="invisible"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/priceTextView" />
+            <ImageView
+                android:id="@+id/recommendImageView5"
+                android:layout_width="170dp"
+                android:layout_height="131dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="17dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/recommendImageView3"
+                tools:layout_editor_absoluteY="591dp"
+                tools:srcCompat="@tools:sample/avatars" />
 
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="368dp"
-            android:layout_height="33dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="56dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.363"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/priceTextView" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="22dp"
-            android:layout_marginTop="17dp"
-            android:text="Choose a size for you"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/priceTextView" />
-
-        <TextView
-            android:id="@+id/similarProducts"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="25dp"
-            android:text="Similar Products"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/saveChangesButton" />
-
-        <ImageView
-            android:id="@+id/recommendImageView1"
-            android:layout_width="170dp"
-            android:layout_height="131dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="30dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/similarProducts"
-            tools:srcCompat="@tools:sample/avatars" />
-
-        <ImageView
-            android:id="@+id/recommendImageView2"
-            android:layout_width="170dp"
-            android:layout_height="131dp"
-            android:layout_marginStart="220dp"
-            android:layout_marginTop="30dp"
-            android:visibility="visible"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/similarProducts"
-            tools:srcCompat="@tools:sample/avatars" />
-
-        <ImageView
-            android:id="@+id/recommendImageView3"
-            android:layout_width="170dp"
-            android:layout_height="131dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="17dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recommendImageView1"
-            tools:layout_editor_absoluteY="591dp"
-            tools:srcCompat="@tools:sample/avatars" />
-
-        <ImageView
-            android:id="@+id/recommendImageView4"
-            android:layout_width="170dp"
-            android:layout_height="131dp"
-            android:layout_marginStart="220dp"
-            android:layout_marginTop="17dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recommendImageView1"
-            tools:srcCompat="@tools:sample/avatars" />
-
-        <ImageView
-            android:id="@+id/recommendImageView5"
-            android:layout_width="170dp"
-            android:layout_height="131dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="17dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recommendImageView3"
-            tools:layout_editor_absoluteY="591dp"
-            tools:srcCompat="@tools:sample/avatars" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</FrameLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 </ScrollView>
