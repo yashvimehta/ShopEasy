@@ -181,7 +181,7 @@ public class UserCustomCardAdapter extends ArrayAdapter<String[]>  {
         try {
             object.put("name", "ShopEasy");
             object.put("description", "Fee payment");
-            object.put("theme.color", "");
+            object.put("theme.color", "#b994e5");
             object.put("currency", "INR");
             object.put("amount", amount*100);
             checkout.open((Activity)mContext, object);
