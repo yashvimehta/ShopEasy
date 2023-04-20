@@ -246,6 +246,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/saveChangesButton" />
 
             <HorizontalScrollView
+                android:id="@+id/scrollView"
                 android:layout_width="0dp"
                 android:layout_height="131dp"
                 android:layout_marginStart="16dp"
@@ -296,6 +297,31 @@
 
                 </LinearLayout>
             </HorizontalScrollView>
+
+            <ImageView
+                android:id="@+id/vtrImageView"
+                android:layout_width="212dp"
+                android:layout_height="204dp"
+                android:layout_marginTop="128dp"
+                android:background="@null"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/titleTextView"
+                app:srcCompat="@drawable/loading" />
+
+            <Button
+                android:id="@+id/backButton"
+                android:layout_width="152dp"
+                android:layout_height="53dp"
+                android:layout_marginTop="48dp"
+                android:background="@drawable/custom_button"
+                android:text="Back"
+                android:textColor="#FFFFFF"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </FrameLayout>

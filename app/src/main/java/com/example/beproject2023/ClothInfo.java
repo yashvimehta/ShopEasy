@@ -23,7 +23,9 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +37,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -74,11 +77,12 @@ public class ClothInfo extends AppCompatActivity {
 //    }
     private static Context contextOfApplication;
     TextView titleTextView, textView2, similarProducts;
-    ImageView thumbnailImageView, recommendImageView1, recommendImageView2, recommendImageView3, recommendImageView4, recommendImageView5;
-    TextView colorTextView, sizeTextView , patternTextView , priceTextView;
+    ImageView thumbnailImageView, recommendImageView1, recommendImageView2, recommendImageView3, recommendImageView4, recommendImageView5,vtrImageView;
     EditText inStockInputText, colorInputText, priceInputText , patternInputText , sizeInputText;
-    Button saveChangesButton, VTRButton, addToCartButton;
-
+    Button saveChangesButton, VTRButton, addToCartButton,backButton;
+    TextInputLayout noOfCopiesTextInputLayout;
+    Spinner spinner;
+    HorizontalScrollView scrollView;
     public Bitmap photo_cloth, photo_user;
 
     StorageReference storage;
@@ -106,17 +110,18 @@ public class ClothInfo extends AppCompatActivity {
         recommendImageView3 = findViewById(R.id.recommendImageView3);
         recommendImageView4 = findViewById(R.id.recommendImageView4);
         recommendImageView5 = findViewById(R.id.recommendImageView5);
-
+        noOfCopiesTextInputLayout=findViewById(R.id.noOfCopiesTextInputLayout);
         inStockInputText=findViewById(R.id.inStockInputText);
         priceInputText = findViewById(R.id.priceInputText);
         colorInputText = findViewById(R.id.colorInputText);
         patternInputText = findViewById(R.id.patternInputText);
         sizeInputText = findViewById(R.id.sizeInputText);
-
-
+        vtrImageView=findViewById(R.id.vtrImageView);
+        backButton=findViewById(R.id.backButton);
+        spinner=findViewById(R.id.spinner);
         textView2= findViewById(R.id.textView2);
         similarProducts = findViewById(R.id.similarProducts);
-
+        scrollView= (HorizontalScrollView) findViewById(R.id.scrollView);
         db = FirebaseFirestore.getInstance();
 
         String [] clothData=null;
@@ -396,6 +401,26 @@ public class ClothInfo extends AppCompatActivity {
 
     public void getPredictionsFromServer(String s,String[] clothData ) {
 
+        thumbnailImageView.setVisibility(View.INVISIBLE);
+        vtrImageView.setVisibility(View.VISIBLE);
+        noOfCopiesTextInputLayout.setVisibility(View.INVISIBLE);
+        colorInputText.setVisibility(View.INVISIBLE);
+        sizeInputText.setVisibility(View.INVISIBLE);
+        patternInputText.setVisibility(View.INVISIBLE);
+        priceInputText.setVisibility(View.INVISIBLE);
+        VTRButton.setVisibility(View.INVISIBLE);
+        addToCartButton.setVisibility(View.INVISIBLE);
+        spinner.setVisibility(View.INVISIBLE);
+        textView2.setVisibility(View.INVISIBLE);
+        similarProducts.setVisibility(View.INVISIBLE);
+        scrollView.setVisibility(View.INVISIBLE);
+        recommendImageView1.setVisibility(View.INVISIBLE);
+        recommendImageView2.setVisibility(View.INVISIBLE);
+        recommendImageView3.setVisibility(View.INVISIBLE);
+        recommendImageView4.setVisibility(View.INVISIBLE);
+        recommendImageView5.setVisibility(View.INVISIBLE);
+        backButton.setVisibility(View.VISIBLE);
+
         try {
 
             Uri tempUri_cloth = saveBitmapImage(ClothInfo.contextOfApplication, photo_cloth);
@@ -433,10 +458,19 @@ public class ClothInfo extends AppCompatActivity {
 
                         byte [] encodeByte = Base64.decode(mResult.getVTRText(),DEFAULT);
                         Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
-                        Intent intent = new Intent(ClothInfo.this, VTR.class);
-                        intent.putExtra("VTRImage", bitmap);
-                        intent.putExtra("ClothData", clothData);
-                        startActivity(intent);
+                        vtrImageView.setImageBitmap(bitmap);
+                        backButton.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                setVTRInvsible();
+
+                            }
+                        });
+//                        Intent intent = new Intent(ClothInfo.this, VTR.class);
+//                        intent.putExtra("VTRImage", bitmap);
+//
+//                        intent.putExtra("ClothData", clothData);
+//                        startActivity(intent);
 
                     } else {
                         Log.i("Failure Checking", mResult.getVTRError()+" ");
@@ -450,7 +484,8 @@ public class ClothInfo extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<VTRResult> call, Throwable t) {
                     Log.i("Failure Checking", "There was an error " + t.getMessage());
-
+                    Toast.makeText(ClothInfo.this, "There was some error", Toast.LENGTH_SHORT).show();
+                    setVTRInvsible();
                     if (file_cloth.exists()) {
                         file_cloth.delete();
                     }
@@ -466,7 +501,28 @@ public class ClothInfo extends AppCompatActivity {
         }
 
     }
-
+    public void setVTRInvsible(){
+        backButton.setVisibility(View.INVISIBLE);
+        vtrImageView.setVisibility(View.INVISIBLE);
+        thumbnailImageView.setVisibility(View.VISIBLE);
+        vtrImageView.setImageResource(R.drawable.loading);
+        noOfCopiesTextInputLayout.setVisibility(View.VISIBLE);
+        colorInputText.setVisibility(View.VISIBLE);
+        sizeInputText.setVisibility(View.VISIBLE);
+        patternInputText.setVisibility(View.VISIBLE);
+        priceInputText.setVisibility(View.VISIBLE);
+        VTRButton.setVisibility(View.VISIBLE);
+        addToCartButton.setVisibility(View.VISIBLE);
+        spinner.setVisibility(View.VISIBLE);
+        textView2.setVisibility(View.VISIBLE);
+        similarProducts.setVisibility(View.VISIBLE);
+        scrollView.setVisibility(View.VISIBLE);
+        recommendImageView1.setVisibility(View.VISIBLE);
+        recommendImageView2.setVisibility(View.VISIBLE);
+        recommendImageView3.setVisibility(View.VISIBLE);
+        recommendImageView4.setVisibility(View.VISIBLE);
+        recommendImageView5.setVisibility(View.VISIBLE);
+    }
     public Uri saveBitmapImage(Context inContext, Bitmap inImage) {
         Log.i("SAVE", "saving image...");
 

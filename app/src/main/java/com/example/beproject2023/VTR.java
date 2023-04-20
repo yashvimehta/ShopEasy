@@ -13,12 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import com.example.beproject2023.databinding.ActivityVtrBinding;
 
 public class VTR extends AppCompatActivity {
 
