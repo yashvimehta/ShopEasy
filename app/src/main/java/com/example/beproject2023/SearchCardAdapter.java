@@ -2,6 +2,7 @@ package com.example.beproject2023;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,7 +49,7 @@ public class SearchCardAdapter extends ArrayAdapter<String[]> {
         final ImageView clothImageView = view.findViewById(R.id.clothImageView);
         TextView clothDetailsTextView=view.findViewById(R.id.clothDetailsTextView);
         clothNameTextView.setText(mArrayList.get(position)[0] + " " + mArrayList.get(position)[1]);
-        clothDetailsTextView.setText("Price: "+mArrayList.get(position)[2] + "\tSize: "+ mArrayList.get(position)[3] );
+        clothDetailsTextView.setText(Html.fromHtml("<b>Price: \u20B9"+mArrayList.get(position)[2] + "</b><br>Size: "+ mArrayList.get(position)[3] ));
         try{
             storage = FirebaseStorage.getInstance().getReference().child("cloth_images/" + mArrayList.get(position)[4]);
             Log.i("YASHVIII", mArrayList.get(position)[4]);

@@ -55,6 +55,7 @@ public class CartItemFragment extends Fragment {
     FirebaseUser user;
     UserCustomCardAdapter mUserCustomCardAdapter;
     Button buyAll;
+    ListView cartItemsListView;
     final String[] memberid = new String[1];
     final String[] vall = new String[2];
     int perDayFine;
@@ -73,10 +74,12 @@ public class CartItemFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         db= FirebaseFirestore.getInstance();
         buyAll = view.findViewById(R.id.buyAll);
-
+        cartItemsListView=view.findViewById(R.id.cartItems);
+        cartItemsListView.setVisibility(View.VISIBLE);
         buyAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                cartItemsListView.setVisibility(View.INVISIBLE);
                 buyAllTransact();
             }
         });

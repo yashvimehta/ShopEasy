@@ -7,6 +7,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.BitmapFactory;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -93,7 +94,7 @@ public class UserCustomCardAdapter extends ArrayAdapter<String[]>  {
         final ImageView imageViewCart = view.findViewById(R.id.imageViewCart);
 
         clothName.setText(mArrayList.get(position)[0] + " " + mArrayList.get(position)[1]);
-        clothDesc.setText("Price: "+mArrayList.get(position)[2] + "\tSize: "+ mArrayList.get(position)[3] );
+        clothDesc.setText(Html.fromHtml("<b>Price: \u20B9"+mArrayList.get(position)[2] + "</b><br>Size: "+ mArrayList.get(position)[3] ));
 
         firebaseAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();

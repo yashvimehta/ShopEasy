@@ -58,7 +58,7 @@ public class ItemsBoughtCustomCardAdapter extends ArrayAdapter<String[]> {
     Context mContext;
     ArrayList<String[]>mArrayList;
     FirebaseFirestore db;
-    TextView clothName, clothDesc;
+    TextView clothName, clothDesc, costTextView;
     StorageReference storage;
     public static String rzpID;
     public static Button rzpButton;
@@ -78,10 +78,12 @@ public class ItemsBoughtCustomCardAdapter extends ArrayAdapter<String[]> {
 
         clothName = view.findViewById(R.id.clothNamee);
         clothDesc = view.findViewById(R.id.clothDesc);
+        costTextView=view.findViewById(R.id.costTextView);
         final ImageView imageViewCart = view.findViewById(R.id.imageViewCart);
 
         clothName.setText(mArrayList.get(position)[0] + " " + mArrayList.get(position)[1]);
-        clothDesc.setText("Price: "+mArrayList.get(position)[2] + "\tSize: "+ mArrayList.get(position)[3] );
+        clothDesc.setText("Size: "+ mArrayList.get(position)[3]);
+        costTextView.setText("\u20B9"+mArrayList.get(position)[2]);
 
         try{
             storage = FirebaseStorage.getInstance().getReference().child("cloth_images/" + mArrayList.get(position)[4]);
