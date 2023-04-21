@@ -62,6 +62,8 @@ public class UserCustomCardAdapter extends ArrayAdapter<String[]>  {
     static Context mContext;
     static ArrayList<String[]>mArrayList;
     Button buyNow;
+    public static Button rzpButton;
+    public static boolean buyNowActive;
     static FirebaseFirestore db;
     TextView clothName, clothDesc;
     StorageReference storage;
@@ -75,7 +77,6 @@ public class UserCustomCardAdapter extends ArrayAdapter<String[]>  {
     public static ArrayList<String> transact_barcode = new ArrayList<String>();
     public static ArrayList<String> transact_size = new ArrayList<String>();
     public static String rzpID;
-    public static Button rzpButton;
     public UserCustomCardAdapter(@NonNull Context context, ArrayList<String[]> stringArrayList) {
         super(context, R.layout.content_user_custom_card_adapter, stringArrayList);
         this.mContext = context;
@@ -120,12 +121,13 @@ public class UserCustomCardAdapter extends ArrayAdapter<String[]>  {
         catch (Exception e){
             e.printStackTrace();
         }
-
-        //TODO Buy now button
+        
         buyNow = view.findViewById(R.id.buyNow);
         buyNow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                buyNowActive=true;
+                rzpButton=view.findViewById(R.id.buyNow);
                 transact_document_id.removeAll(transact_document_id);
                 transact_barcode.removeAll(transact_barcode);
                 transact_size.removeAll(transact_size);
@@ -185,7 +187,6 @@ public class UserCustomCardAdapter extends ArrayAdapter<String[]>  {
             object.put("currency", "INR");
             object.put("amount", amount*100);
             checkout.open((Activity)mContext, object);
-            Toast.makeText(mContext, "hey theree!!!!", Toast.LENGTH_SHORT).show();
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -194,6 +195,7 @@ public class UserCustomCardAdapter extends ArrayAdapter<String[]>  {
 
     public static void buyAllTransact(){
         int sumAmount=0;
+        buyNowActive=false;
         transact_document_id.removeAll(transact_document_id);
         transact_barcode.removeAll(transact_barcode);
         transact_size.removeAll(transact_size);

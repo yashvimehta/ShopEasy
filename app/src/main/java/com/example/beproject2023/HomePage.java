@@ -1,9 +1,11 @@
 package com.example.beproject2023;
 import static android.content.ContentValues.TAG;
 import static com.example.beproject2023.SearchPageFragment.LocIn;
+import static com.example.beproject2023.UserCustomCardAdapter.buyNowActive;
 import static com.example.beproject2023.UserCustomCardAdapter.itemm;
 import static com.example.beproject2023.UserCustomCardAdapter.price;
 import static com.example.beproject2023.UserCustomCardAdapter.quantity;
+import static com.example.beproject2023.UserCustomCardAdapter.rzpButton;
 import static com.example.beproject2023.UserCustomCardAdapter.transact_document_id;
 import static com.example.beproject2023.UserCustomCardAdapter.transact_barcode;
 import static com.example.beproject2023.UserCustomCardAdapter.transact_size;
@@ -93,6 +95,9 @@ public class HomePage extends AppCompatActivity implements PaymentResultWithData
     @Override
     public void onPaymentSuccess(String s, PaymentData paymentData) {
         // decrement in_stock by 1 for that cloth
+        if (buyNowActive){
+            rzpButton.setVisibility(View.INVISIBLE);
+        }
         for(int j=0;j<transact_barcode.size();j++){
             int finalJ = j;
             db.collection("clothes")
@@ -124,7 +129,6 @@ public class HomePage extends AppCompatActivity implements PaymentResultWithData
             mMap.put("barcode",transact_barcode.get(j));
             mMap.put("size",transact_size.get(j));
             mMap.put("useruid", firebaseAuth.getCurrentUser().getUid());
-            //TODO ADD Date
             Calendar c = Calendar.getInstance();
             mMap.put("date",c.getTime());
             db.collection("itemsBought").add(mMap);

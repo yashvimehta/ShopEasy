@@ -60,8 +60,6 @@ public class ItemsBoughtCustomCardAdapter extends ArrayAdapter<String[]> {
     FirebaseFirestore db;
     TextView clothName, clothDesc, costTextView;
     StorageReference storage;
-    public static String rzpID;
-    public static Button rzpButton;
     public ItemsBoughtCustomCardAdapter(@NonNull Context context, ArrayList<String[]> stringArrayList) {
         super(context, R.layout.content_items_bought_custom_card_adapter, stringArrayList);
         this.mContext = context;
