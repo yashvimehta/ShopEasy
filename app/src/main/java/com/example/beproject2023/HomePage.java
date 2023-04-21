@@ -20,6 +20,7 @@ import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -49,8 +50,12 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -112,11 +117,16 @@ public class HomePage extends AppCompatActivity implements PaymentResultWithData
             //delete from cart
             db.collection("cart").document(transact_document_id.get(j)).delete();
 
+
+
             //add to itemsBought collection
             Map<String, Object> mMap = new HashMap<>();
             mMap.put("barcode",transact_barcode.get(j));
             mMap.put("size",transact_size.get(j));
             mMap.put("useruid", firebaseAuth.getCurrentUser().getUid());
+            //TODO ADD Date
+            Calendar c = Calendar.getInstance();
+            mMap.put("date",c.getTime());
             db.collection("itemsBought").add(mMap);
             Log.i("pppp11111", "kkk1111");
         }
@@ -130,8 +140,8 @@ public class HomePage extends AppCompatActivity implements PaymentResultWithData
                 .client(okHttpClient)
                 .build();
         ApiInterface apiInterface = retrofit.create(ApiInterface.class);
-        Log.i("pooo",  String.join(",", itemm));
-        Call<Billing> mCall = apiInterface.sendMail("yashvimehta45@gmail.com", String.join(",", itemm),String.join(",", quantity),String.join(",", price));
+        Log.i("pooo",  TextUtils.join(",", itemm));
+        Call<Billing> mCall = apiInterface.sendMail("yashvimehta45@gmail.com", TextUtils.join(",", itemm),TextUtils.join(",", quantity),TextUtils.join(",", price));
         mCall.enqueue(new Callback<Billing>() {
             @Override
             public void onResponse(Call<Billing> call, Response<Billing> response) {

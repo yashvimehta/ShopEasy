@@ -82,8 +82,13 @@ public class ItemsBought extends Fragment {
                                     if(useruid.equals(user.getUid())){
                                         String sizee =  String.valueOf(document.getData().get("size"));
                                         String barcode = String.valueOf(document.getData().get("barcode"));
-                                        Log.i("hey there", "kk");
-
+                                        Timestamp javaDate1 = (Timestamp) document.getData().get("date");
+                                        Date javaDate = javaDate1.toDate();
+                                        String[] buyDate  = String.valueOf(javaDate).split(" GMT") ;
+                                        int n=buyDate[0].length();
+                                        int m=buyDate[1].length();
+                                        String buyDate1 = buyDate[0].substring(4, n - 9)+", "+buyDate[1].substring(m-4,m);
+                                        Log.i("Date",buyDate1);
                                         db.collection("clothes")
                                                 .get()
                                                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -99,8 +104,9 @@ public class ItemsBought extends Fragment {
                                                                     String price = String.valueOf(document.getData().get("price"));
                                                                     String size =  String.valueOf(document.getData().get("size"));
                                                                     String image_name = String.valueOf(document.getData().get("image_name"));
-                                                                    String[] arrayListFeeder=new String[]{StringFormatter.capitalizeWord(color), StringFormatter.capitalizeWord(pattern), price, sizee, image_name, barcode};
+                                                                    String[] arrayListFeeder=new String[]{StringFormatter.capitalizeWord(color), StringFormatter.capitalizeWord(pattern), price, sizee, image_name, barcode,buyDate1,String.valueOf(javaDate1.getSeconds())};
                                                                     stringArrayList.add(arrayListFeeder);
+                                                                    sort(stringArrayList);
                                                                     mUserCustomCardAdapter = new ItemsBoughtCustomCardAdapter(requireContext(), stringArrayList);
                                                                     mListView.setAdapter(mUserCustomCardAdapter);
                                                                     mListView.setVisibility(View.VISIBLE);
@@ -128,5 +134,17 @@ public class ItemsBought extends Fragment {
 
 
         return view;
+    }
+    public void sort(ArrayList<String[]> stringArrayList){
+        Collections.sort(stringArrayList, new Comparator<String[]>() {
+
+            @Override
+            public int compare(String[] s1, String[] s2) {
+                long s1Time = Long.valueOf(s1[7]);
+                long s2Time=Long.valueOf(s2[7]);
+                return (int)(s2Time-s1Time);
+            }
+        });
+
     }
 }

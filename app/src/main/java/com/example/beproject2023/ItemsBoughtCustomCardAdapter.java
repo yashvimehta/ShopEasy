@@ -82,7 +82,7 @@ public class ItemsBoughtCustomCardAdapter extends ArrayAdapter<String[]> {
         final ImageView imageViewCart = view.findViewById(R.id.imageViewCart);
 
         clothName.setText(mArrayList.get(position)[0] + " " + mArrayList.get(position)[1]);
-        clothDesc.setText("Size: "+ mArrayList.get(position)[3]);
+        clothDesc.setText("Size: "+ mArrayList.get(position)[3]+"\nDate: "+mArrayList.get(position)[6]);
         costTextView.setText("\u20B9"+mArrayList.get(position)[2]);
 
         try{

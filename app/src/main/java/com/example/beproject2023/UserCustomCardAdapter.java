@@ -121,7 +121,7 @@ public class UserCustomCardAdapter extends ArrayAdapter<String[]>  {
             e.printStackTrace();
         }
 
-
+        //TODO Buy now button
         buyNow = view.findViewById(R.id.buyNow);
         buyNow.setOnClickListener(new View.OnClickListener() {
             @Override
