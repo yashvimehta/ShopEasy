@@ -22,14 +22,18 @@ public class AdminFragmentAdapter extends FragmentPagerAdapter {
         if(position==0){
             return new AdminEditProfileFragment();
         }
-        return new SearchPageFragment();
-
+        if(position==1){
+            return new SearchPageFragment();
+        }
+        else{
+            return new AddClothFragment();
+        }
     }
 
     @Override
     public int getCount()
     {
-        return 2;
+        return 3;
     }
 };
 
