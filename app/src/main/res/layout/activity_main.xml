@@ -26,6 +26,7 @@
         android:layout_marginEnd="52dp"
         android:background="@drawable/edittext_border"
         android:ems="10"
+        android:focusableInTouchMode="true"
         android:fontFamily="sans-serif"
         android:hint="Email"
         android:inputType="textEmailAddress"
@@ -46,6 +47,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="52dp"
         android:background="@drawable/edittext_border"
+        android:focusableInTouchMode="true"
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
@@ -87,5 +89,18 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logoLogInImage" />
+
+    <TextView
+        android:id="@+id/goToSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="34dp"
+        android:text="Don't have an account? Sign Up here"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logInButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.beproject2023" >
+    package="com.example.beproject2023">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -19,12 +19,19 @@
         android:roundIcon="@mipmap/ic_app_img_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar"
-        android:usesCleartextTraffic="true" >
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".UploadImage"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".SignUp"
             android:exported="false"
             android:label="@string/title_activity_sign_up"
-            android:theme="@style/NoActionBar" >
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -33,7 +40,7 @@
             android:name=".AdminHomePage"
             android:exported="true"
             android:label="@string/title_activity_admin_home_page"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
@@ -46,7 +53,7 @@
             android:name=".UserCustomCardAdapter"
             android:exported="false"
             android:label="@string/title_activity_user_custom_card_adapter"
-            android:theme="@style/NoActionBar" >
+            android:theme="@style/NoActionBar">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -55,7 +62,7 @@
             android:name=".VTR"
             android:exported="false"
             android:label="@string/title_activity_vtr"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -64,7 +71,7 @@
             android:name=".ClothInfo"
             android:exported="false"
             android:label="@string/title_activity_cloth_info"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
@@ -73,14 +80,14 @@
             android:name=".SearchCardAdapter"
             android:exported="false"
             android:label="@string/title_activity_search_card_adapter"
-            android:theme="@style/NoActionBar" >
+            android:theme="@style/NoActionBar">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -91,7 +98,7 @@
         </activity>
         <activity
             android:name=".HomePage"
-            android:exported="true" >
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>

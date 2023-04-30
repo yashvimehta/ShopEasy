@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -38,10 +39,11 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference databaseReference;
     FirebaseUser user;
 
-    TextView textViewToggle;
+    TextView textViewToggle, goToSignUp;
     Button buttonLogin, buttonSignup;
     EditText editTextEmail, editTextPasswordLogin;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +58,16 @@ public class MainActivity extends AppCompatActivity {
 
         editTextEmail = findViewById(R.id.editTextLogInEmailAddress);
         editTextPasswordLogin = findViewById(R.id.editTextLogInPassword);
+
+        goToSignUp=findViewById(R.id.goToSignUp);
+
+        goToSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SignUp.class);
+                startActivity(intent);
+            }
+        });
 
         if (firebaseAuth.getCurrentUser() != null) {
             db.collection("users")

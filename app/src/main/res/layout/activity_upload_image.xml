@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bgimage"
+    tools:context=".UploadImage">
+
+    <ImageView
+        android:id="@+id/cameraImageView"
+        android:layout_width="98dp"
+        android:layout_height="79dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="180dp"
+        android:src="@drawable/ic_baseline_camera_alt_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/galleryImageView"
+        android:layout_width="98dp"
+        android:layout_height="79dp"
+        android:layout_marginTop="180dp"
+        android:layout_marginEnd="64dp"
+        android:src="@drawable/gallery"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="75dp"
+        android:fontFamily="sans-serif"
+        android:text="Upload a Picture "
+        android:textColor="#BAFFFEFE"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textDisplay"
+        android:layout_width="329dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="60dp"
+        android:text="Please ensure that the upper body is clearly visible."
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cameraImageView" />
+
+    <ImageView
+        android:id="@+id/actualImage"
+        android:layout_width="222dp"
+        android:layout_height="205dp"
+        android:layout_marginTop="60dp"
+        app:layout_constraintEnd_toStartOf="@+id/galleryImageView"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/cameraImageView"
+        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        tools:srcCompat="@tools:sample/avatars"
+        tools:visibility="invisible" />
+
+    <Button
+        android:id="@+id/cancelButton"
+        android:layout_width="152dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="180dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/custom_button"
+        android:text="Cancel"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cameraImageView" />
+
+    <Button
+        android:id="@+id/confirmButton"
+        android:layout_width="152dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="180dp"
+        android:layout_marginEnd="32dp"
+        android:background="@drawable/custom_button"
+        android:text="Confirm"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cameraImageView" />
+</androidx.constraintlayout.widget.ConstraintLayout>
