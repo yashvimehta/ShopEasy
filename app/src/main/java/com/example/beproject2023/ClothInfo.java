@@ -333,25 +333,12 @@ public class ClothInfo extends AppCompatActivity {
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 int val=0;
                                 if (task.isSuccessful()) {
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        String barcode_fb = String.valueOf(document.getData().get("barcode"));
-                                        String uid_fb = String.valueOf(document.getData().get("useruid"));
-                                        String size = String.valueOf(document.getData().get("size"));
-                                        if(finalClothData3[5].equals(barcode_fb) && uid_fb.equals(mUser.getUid()) && size.equals(dropdown.getSelectedItem().toString())){
-                                            val++;
-                                        }
-                                    }
-                                    if(val!=0){
-                                        Toast.makeText(ClothInfo.this, "Item already added in cart", Toast.LENGTH_SHORT).show();
-                                    }
-                                    else{
-                                        Map<String, Object> mMap = new HashMap<>();
-                                        mMap.put("barcode", finalClothData3[5]);
-                                        mMap.put("size", dropdown.getSelectedItem().toString());
-                                        mMap.put("useruid", mUser.getUid());
-                                        db.collection("cart").add(mMap);
-                                        Toast.makeText(ClothInfo.this, "Added to Cart", Toast.LENGTH_SHORT).show();
-                                    }
+                                    Map<String, Object> mMap = new HashMap<>();
+                                    mMap.put("barcode", finalClothData3[5]);
+                                    mMap.put("size", dropdown.getSelectedItem().toString());
+                                    mMap.put("useruid", mUser.getUid());
+                                    db.collection("cart").add(mMap);
+                                    Toast.makeText(ClothInfo.this, "Added to Cart", Toast.LENGTH_SHORT).show();
                                 } else {
                                     Log.d(TAG, "Error getting documents: ", task.getException());
                                 }
