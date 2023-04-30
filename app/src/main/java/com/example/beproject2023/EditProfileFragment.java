@@ -2,12 +2,14 @@ package com.example.beproject2023;
 
 import static android.content.ContentValues.TAG;
 
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -18,48 +20,41 @@ import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
 import android.provider.OpenableColumns;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.beproject2023.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 
 public class EditProfileFragment extends Fragment {
     Button logoutButton;
     EditText pwdInputText;
     EditText confirmPwdInputText;
-    Button editProfileButton, cancelButton, confirmButton;
+    Button editProfileButton, cancelButton, confirmButton, changeProfilePictureButton;
     FirebaseAuth firebaseAuth;
-
-    TextView changeProfileImageText;
-
     ImageView camera, gallery, profile;
 
     FirebaseFirestore db;
@@ -68,10 +63,10 @@ public class EditProfileFragment extends Fragment {
 
     Uri currentImageUri;
 
-    Bitmap image;
+    Bitmap image, photo_cloth;
 
 
-    StorageReference storageRef;
+    StorageReference storageRef,storagee;
 
     FirebaseStorage storage;
 
@@ -91,45 +86,59 @@ public class EditProfileFragment extends Fragment {
         editProfileButton = view.findViewById(R.id.editProfileButton);
         logoutButton = view.findViewById(R.id.logoutButton);
 
-        cancelButton = view.findViewById(R.id.cancelButton);
-        confirmButton = view.findViewById(R.id.confirmButton);
-
-        camera = view.findViewById(R.id.cameraImageView);
-        gallery = view.findViewById(R.id.galleryImageView);
-        profile = view.findViewById(R.id.profileImageView);
-
-        storage = FirebaseStorage.getInstance();
-
-        changeProfileImageText = view.findViewById(R.id.changeProfileImageText);
-
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
         db= FirebaseFirestore.getInstance();
 
-        camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                retryButton.setVisibility(View.INVISIBLE);
-                changeProfileImageText.setVisibility(View.INVISIBLE);
+        cancelButton = view.findViewById(R.id.cancelButton);
+        confirmButton = view.findViewById(R.id.confirmButton);
+        profile = view.findViewById(R.id.profileImageView);
+        profile.setVisibility(View.VISIBLE);
 
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (HomePage.contextOfApplication.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                        requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
-
-                    } else {
-                        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        startActivityForResult(cameraIntent, CAMERA_REQUEST);
+        db.collection("users")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                String uuid = String.valueOf(document.getData().get("uuid"));
+                                if(uuid.equals(firebaseAuth.getCurrentUser().getUid())){
+                                    String user_image_name = String.valueOf(document.getData().get("image"));
+                                    storagee = FirebaseStorage.getInstance().getReference().child("user_images/" + user_image_name);
+                                    String[] str = user_image_name.split("[.]", 0);
+                                    final File localFile;
+                                    try {
+                                        localFile = File.createTempFile(str[0],str[1] );
+                                        storagee.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                                            @Override
+                                            public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                                                photo_cloth = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                                                profile.setImageBitmap(photo_cloth);
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                e.printStackTrace();
+                                                Log.i("errrorr", e.toString()+"");
+                                                String text = "There was some error";
+                                            }
+                                        });
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        } else {
+                            Log.d(TAG, "Error getting documents: ", task.getException());
+                        }
                     }
-                }
-            }
-        });
+                });
 
-        gallery.setOnClickListener(new View.OnClickListener() {
+        changeProfilePictureButton = view.findViewById(R.id.changeProfilePictureButton);
+        changeProfilePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                retryButton.setVisibility(View.INVISIBLE);
-                changeProfileImageText.setVisibility(View.INVISIBLE);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (HomePage.contextOfApplication.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -148,23 +157,19 @@ public class EditProfileFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 profile.setVisibility(View.INVISIBLE);
-                camera.setVisibility(View.VISIBLE);
-                gallery.setVisibility(View.VISIBLE);
                 cancelButton.setVisibility(View.INVISIBLE);
                 confirmButton.setVisibility(View.INVISIBLE);
-                changeProfileImageText.setVisibility(View.VISIBLE);
+                changeProfilePictureButton.setVisibility(View.VISIBLE);
             }
         });
 
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                profile.setVisibility(View.INVISIBLE);
-                camera.setVisibility(View.VISIBLE);
-                gallery.setVisibility(View.VISIBLE);
+                profile.setVisibility(View.VISIBLE);
                 cancelButton.setVisibility(View.INVISIBLE);
                 confirmButton.setVisibility(View.INVISIBLE);
-                changeProfileImageText.setVisibility(View.VISIBLE);
+                changeProfilePictureButton.setVisibility(View.VISIBLE);
 
                 //add to db
 
@@ -200,8 +205,11 @@ public class EditProfileFragment extends Fragment {
                             }
                         });
 
+                storage = FirebaseStorage.getInstance();
+
                 storageRef = storage.getReference();
                 StorageReference imageRef = storageRef.child("user_images/"+flie_name);
+
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 image.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] data = baos.toByteArray();
@@ -303,9 +311,8 @@ public class EditProfileFragment extends Fragment {
             profile.setImageBitmap(photo);
             image = photo;
             Log.i("hi there", "p");
-            camera.setVisibility(View.INVISIBLE);
             profile.setVisibility(View.VISIBLE);
-            gallery.setVisibility(View.INVISIBLE);
+            changeProfilePictureButton.setVisibility(View.INVISIBLE);
             cancelButton.setVisibility(View.VISIBLE);
             confirmButton.setVisibility(View.VISIBLE);
         } catch (IOException e) {

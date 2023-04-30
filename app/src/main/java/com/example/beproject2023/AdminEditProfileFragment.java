@@ -55,10 +55,9 @@ public class AdminEditProfileFragment extends Fragment {
     Button logoutButton;
     EditText pwdInputText;
     EditText confirmPwdInputText;
-    Button editProfileButton, cancelButton, confirmButton;
+    Button editProfileButton, cancelButton, confirmButton, changeProfilePictureButton;
     FirebaseAuth firebaseAuth;
 
-    TextView changeProfileImageText;
 
     ImageView camera, gallery, profile;
 
@@ -99,8 +98,6 @@ public class AdminEditProfileFragment extends Fragment {
         profile = view.findViewById(R.id.profileImageView);
 
         storage = FirebaseStorage.getInstance();
-
-        changeProfileImageText = view.findViewById(R.id.changeProfileImageText);
 
         firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();

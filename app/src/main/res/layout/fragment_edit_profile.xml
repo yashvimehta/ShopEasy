@@ -143,32 +143,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editProfileButton" />
 
-        <ImageView
-            android:id="@+id/cameraImageView"
-            android:layout_width="73dp"
-            android:layout_height="61dp"
-            android:layout_marginStart="77dp"
-            android:layout_marginTop="99dp"
-            android:src="@drawable/ic_baseline_camera_alt_24"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/galleryImageView"
-            android:layout_width="73dp"
-            android:layout_height="61dp"
-            android:layout_marginTop="99dp"
-            android:layout_marginEnd="77dp"
-            android:src="@drawable/gallery"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
         <Button
             android:id="@+id/cancelButton"
             android:layout_width="152dp"
             android:layout_height="45dp"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="44dp"
+            android:layout_marginTop="2dp"
             android:layout_marginEnd="32dp"
             android:background="@drawable/custom_button"
             android:text="Cancel"
@@ -176,14 +156,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cameraImageView" />
+            app:layout_constraintTop_toBottomOf="@+id/profileImageView" />
 
         <Button
             android:id="@+id/confirmButton"
             android:layout_width="152dp"
             android:layout_height="45dp"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="44dp"
+            android:layout_marginTop="2dp"
             android:layout_marginEnd="32dp"
             android:background="@drawable/custom_button"
             android:text="Confirm"
@@ -191,32 +171,30 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cameraImageView" />
-
-        <TextView
-            android:id="@+id/changeProfileImageText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="129dp"
-            android:layout_marginTop="44dp"
-            android:layout_marginEnd="129dp"
-            android:text="Change Profile Image"
-            android:textColor="#FFFFFF"
-            android:textSize="19sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cameraImageView" />
+            app:layout_constraintTop_toBottomOf="@+id/profileImageView" />
 
         <ImageView
             android:id="@+id/profileImageView"
             android:layout_width="163dp"
             android:layout_height="138dp"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toStartOf="@+id/galleryImageView"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/cameraImageView"
+            android:layout_marginTop="8dp"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView"
             tools:srcCompat="@tools:sample/avatars" />
+
+        <Button
+            android:id="@+id/changeProfilePictureButton"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/custom_button"
+            android:text="Change Profile Picture"
+            app:layout_constraintBottom_toTopOf="@+id/view"
+            app:layout_constraintEnd_toStartOf="@+id/confirmButton"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/cancelButton" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
