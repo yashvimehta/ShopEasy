@@ -80,7 +80,7 @@ public class ClothInfo extends AppCompatActivity {
     ImageView thumbnailImageView, recommendImageView1, recommendImageView2, recommendImageView3, recommendImageView4, recommendImageView5,vtrImageView;
     EditText inStockInputText, colorInputText, priceInputText , patternInputText , sizeInputText;
     Button saveChangesButton, VTRButton, addToCartButton,backButton;
-    TextInputLayout noOfCopiesTextInputLayout;
+    TextInputLayout noOfCopiesTextInputLayout,colorTextInputLayout,patternTextInputLayout,sizeTextInputLayout,priceTextInputLayout;
     Spinner spinner;
     HorizontalScrollView scrollView;
     public Bitmap photo_cloth, photo_user;
@@ -111,6 +111,11 @@ public class ClothInfo extends AppCompatActivity {
         recommendImageView4 = findViewById(R.id.recommendImageView4);
         recommendImageView5 = findViewById(R.id.recommendImageView5);
         noOfCopiesTextInputLayout=findViewById(R.id.noOfCopiesTextInputLayout);
+        colorTextInputLayout=findViewById(R.id.colorTextInputLayout);
+        patternTextInputLayout=findViewById(R.id.patternTextInputLayout);
+        sizeTextInputLayout=findViewById(R.id.sizeTextInputLayout);
+        priceTextInputLayout=findViewById(R.id.priceTextInputLayout);
+
         inStockInputText=findViewById(R.id.inStockInputText);
         priceInputText = findViewById(R.id.priceInputText);
         colorInputText = findViewById(R.id.colorInputText);
@@ -176,14 +181,14 @@ public class ClothInfo extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String textString = "<b>Color: </b>"+ clothData[0];
-        colorInputText.setText(Html.fromHtml(textString));
-        textString="<b>Sizes: </b>"+ clothData[3].replace(" ",", ");
-        sizeInputText.setText(Html.fromHtml(textString));
-        textString="<b>Pattern: </b>"+ clothData[1];
-        patternInputText.setText(Html.fromHtml(textString));
-        textString="<b>Price: </b>\u20B9"+ clothData[2];
-        priceInputText.setText(Html.fromHtml(textString));
+        //String textString = "<b>Color: </b>"+ clothData[0];
+        colorInputText.setText(clothData[0]);
+        //textString="<b>Sizes: </b>"+ clothData[3].replace(" ",", ");
+        sizeInputText.setText(clothData[3]);
+        //textString="<b>Pattern: </b>"+ clothData[1];
+        patternInputText.setText(clothData[1]);
+        //textString="<b>Price: </b>\u20B9"+ clothData[2];
+        priceInputText.setText(clothData[2]);
         inStockInputText.setText(clothData[6]);
 
         //get user image
@@ -234,6 +239,8 @@ public class ClothInfo extends AppCompatActivity {
             VTRButton.setVisibility(View.INVISIBLE);
             addToCartButton.setVisibility(View.INVISIBLE);
             similarProducts.setVisibility(View.INVISIBLE);
+            scrollView.setVisibility(View.GONE);
+            spinner.setVisibility(View.INVISIBLE);
             recommendImageView1.setVisibility(View.INVISIBLE);
             recommendImageView2.setVisibility(View.INVISIBLE);
             recommendImageView3.setVisibility(View.INVISIBLE);
@@ -245,7 +252,7 @@ public class ClothInfo extends AppCompatActivity {
             sizeInputText.setInputType(InputType.TYPE_CLASS_TEXT);
 
             colorInputText.setInputType(InputType.TYPE_NULL);
-            patternInputText.setInputType(InputType.TYPE_NULL);
+            patternInputText.setInputType(InputType.TYPE_CLASS_TEXT);
 
             saveChangesButton.setVisibility(View.VISIBLE);
             String[] finalClothData = clothData;
@@ -255,7 +262,8 @@ public class ClothInfo extends AppCompatActivity {
                     String noOfStock = inStockInputText.getText().toString();
                     String price = priceInputText.getText().toString();
                     String size = sizeInputText.getText().toString();
-                    if(noOfStock.equals("") || price.equals("") || size.equals("")){
+                    String pattern=patternInputText.getText().toString();
+                    if(noOfStock.equals("") || price.equals("") || size.equals("") ||pattern.equals("")){
                         Toast.makeText(ClothInfo.this, "Fields cannot be empty", Toast.LENGTH_SHORT).show();
                     }
                     else if(Integer.parseInt(noOfStock)<0){
@@ -277,6 +285,7 @@ public class ClothInfo extends AppCompatActivity {
                                                     db.collection("clothes").document(document.getId()).update("in_stock", noOfStock);
                                                     db.collection("clothes").document(document.getId()).update("price", price);
                                                     db.collection("clothes").document(document.getId()).update("size", size);
+                                                    db.collection("clothes").document(document.getId()).update("pattern", pattern);
                                                 }
                                             }
                                         } else {
@@ -404,6 +413,10 @@ public class ClothInfo extends AppCompatActivity {
         thumbnailImageView.setVisibility(View.INVISIBLE);
         vtrImageView.setVisibility(View.VISIBLE);
         noOfCopiesTextInputLayout.setVisibility(View.INVISIBLE);
+        colorTextInputLayout.setVisibility(View.INVISIBLE);
+        sizeTextInputLayout.setVisibility(View.INVISIBLE);
+        patternTextInputLayout.setVisibility(View.INVISIBLE);
+        priceTextInputLayout.setVisibility(View.INVISIBLE);
         colorInputText.setVisibility(View.INVISIBLE);
         sizeInputText.setVisibility(View.INVISIBLE);
         patternInputText.setVisibility(View.INVISIBLE);
@@ -507,6 +520,10 @@ public class ClothInfo extends AppCompatActivity {
         thumbnailImageView.setVisibility(View.VISIBLE);
         vtrImageView.setImageResource(R.drawable.loading);
         noOfCopiesTextInputLayout.setVisibility(View.VISIBLE);
+        colorTextInputLayout.setVisibility(View.VISIBLE);
+        sizeTextInputLayout.setVisibility(View.VISIBLE);
+        patternTextInputLayout.setVisibility(View.VISIBLE);
+        priceTextInputLayout.setVisibility(View.VISIBLE);
         colorInputText.setVisibility(View.VISIBLE);
         sizeInputText.setVisibility(View.VISIBLE);
         patternInputText.setVisibility(View.VISIBLE);

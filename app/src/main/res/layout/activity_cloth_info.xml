@@ -82,89 +82,152 @@
                 app:layout_constraintTop_toBottomOf="@+id/titleTextView"
                 app:srcCompat="@drawable/loading" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/colorInputText"
-                android:layout_width="242dp"
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/colorTextInputLayout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="24dp"
-                android:layout_weight="1"
-                android:background="@null"
-                android:hint="In stock"
-                android:inputType="none"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/edittext_border"
                 android:paddingLeft="5dp"
                 android:paddingTop="5dp"
-                android:paddingRight="5dp"
-                android:paddingBottom="5dp"
-                android:text="loading..."
                 android:textColor="#FFFFFF"
-                android:textSize="18sp"
+                android:textColorHint="#FFFFFFFF"
+                android:visibility="visible"
+                app:boxBackgroundMode="none"
+                app:hintTextColor="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/noOfCopiesTextInputLayout"
-                tools:ignore="TouchTargetSizeCheck" />
+                app:layout_constraintTop_toBottomOf="@+id/noOfCopiesTextInputLayout">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/sizeInputText"
-                android:layout_width="242dp"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/colorInputText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:hint="Colors"
+                    android:inputType="none"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="5dp"
+                    android:text="loading..."
+                    android:textColor="#FFFFFF"
+                    tools:ignore="TouchTargetSizeCheck" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/sizeTextInputLayout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_weight="1"
-                android:background="@null"
-                android:hint="In stock"
-                android:inputType="none"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/edittext_border"
                 android:paddingLeft="5dp"
                 android:paddingTop="5dp"
-                android:paddingRight="5dp"
-                android:paddingBottom="5dp"
-                android:text="loading..."
                 android:textColor="#FFFFFF"
-                android:textSize="18sp"
+                android:textColorHint="#FFFFFFFF"
+                android:visibility="visible"
+                app:boxBackgroundMode="none"
+                app:hintTextColor="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/colorInputText"
-                tools:ignore="TouchTargetSizeCheck" />
+                app:layout_constraintTop_toBottomOf="@+id/colorTextInputLayout">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/patternInputText"
-                android:layout_width="242dp"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/sizeInputText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:hint="Sizes"
+                    android:inputType="none"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="5dp"
+                    android:text="loading..."
+                    android:textColor="#FFFFFF"
+                    tools:ignore="TouchTargetSizeCheck" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/patternTextInputLayout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_weight="1"
-                android:background="@null"
-                android:hint="In stock"
-                android:inputType="none"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/edittext_border"
                 android:paddingLeft="5dp"
                 android:paddingTop="5dp"
-                android:paddingRight="5dp"
-                android:paddingBottom="5dp"
-                android:text="loading..."
                 android:textColor="#FFFFFF"
-                android:textSize="18sp"
+                android:textColorHint="#FFFFFFFF"
+                android:visibility="visible"
+                app:boxBackgroundMode="none"
+                app:hintTextColor="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/sizeInputText"
-                tools:ignore="TouchTargetSizeCheck" />
+                app:layout_constraintTop_toBottomOf="@+id/sizeTextInputLayout">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/priceInputText"
-                android:layout_width="242dp"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/patternInputText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:hint="Patterns"
+                    android:inputType="none"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="5dp"
+                    android:text="loading..."
+                    android:textColor="#FFFFFF"
+                    tools:ignore="TouchTargetSizeCheck" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/priceTextInputLayout"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_weight="1"
-                android:background="@null"
-                android:hint="In stock"
-                android:inputType="none"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/edittext_border"
                 android:paddingLeft="5dp"
                 android:paddingTop="5dp"
-                android:paddingRight="5dp"
-                android:paddingBottom="5dp"
-                android:text="loading..."
                 android:textColor="#FFFFFF"
-                android:textSize="18sp"
+                android:textColorHint="#FFFFFFFF"
+                android:visibility="visible"
+                app:boxBackgroundMode="none"
+                app:hintTextColor="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/patternInputText"
-                tools:ignore="TouchTargetSizeCheck" />
+                app:layout_constraintTop_toBottomOf="@+id/patternTextInputLayout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/priceInputText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:hint="Price (\u20B9)"
+                    android:inputType="none"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingBottom="5dp"
+                    android:text="loading..."
+                    android:textColor="#FFFFFF"
+                    tools:ignore="TouchTargetSizeCheck" />
+            </com.google.android.material.textfield.TextInputLayout>
+
 
             <Button
                 android:id="@+id/VTRButton"
@@ -216,7 +279,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.54"
                 app:layout_constraintStart_toEndOf="@+id/textView2"
-                app:layout_constraintTop_toBottomOf="@+id/priceInputText" />
+                app:layout_constraintTop_toBottomOf="@+id/priceTextInputLayout" />
 
             <TextView
                 android:id="@+id/textView2"
@@ -230,7 +293,7 @@
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/priceInputText" />
+                app:layout_constraintTop_toBottomOf="@+id/priceTextInputLayout" />
 
             <TextView
                 android:id="@+id/similarProducts"
@@ -304,7 +367,7 @@
                 android:layout_height="204dp"
                 android:layout_marginTop="128dp"
                 android:background="@null"
-                android:visibility="invisible"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/titleTextView"
