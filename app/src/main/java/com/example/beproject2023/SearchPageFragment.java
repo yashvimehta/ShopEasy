@@ -312,7 +312,8 @@ public class SearchPageFragment extends Fragment {
                                                     String image_name = String.valueOf(document.getData().get("image_name"));
                                                     String color = String.valueOf(document.getData().get("color"));
                                                     String pattern = String.valueOf(document.getData().get("pattern"));
-                                                    String[] arrayListFeeder=new String[]{StringFormatter.capitalizeWord(color), StringFormatter.capitalizeWord(pattern), price, size, image_name, barcode};
+                                                    String in_stock = String.valueOf(document.getData().get("in_stock"));
+                                                    String[] arrayListFeeder=new String[]{StringFormatter.capitalizeWord(color), StringFormatter.capitalizeWord(pattern), price, size, image_name, barcode, in_stock};
                                                     stringArrayList.add(arrayListFeeder);
                                                 }
                                             }
