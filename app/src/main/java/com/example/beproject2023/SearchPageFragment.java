@@ -393,8 +393,8 @@ public class SearchPageFragment extends Fragment {
                             Log.i("LATTTT1", String.valueOf(location.getLatitude()));
                             Log.i("LONGGG1", String.valueOf(location.getLongitude()));
                             Location.distanceBetween(location.getLatitude(),location.getLongitude(),
-                            19.22008747, 72.86325931, distance);
-                            double radiusInMeters = 500.0;
+                                    19.12336307694801, 72.83557257898565, distance);
+                            double radiusInMeters = 50000.0;
                             if( distance[0] <= radiusInMeters ) {
                                 Log.i("Location", "Within radius");
                                 LocIn=true;

@@ -69,38 +69,38 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if (firebaseAuth.getCurrentUser() != null) {
-            db.collection("users")
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    if(String.valueOf(document.getData().get("uuid")).equals(user.getUid())  && String.valueOf(document.getData().get("isAdmin")).equals("true") ) {
-                                        Log.i("ADMINNN", "ADMIN");
-                                        isAdmin=true;
-                                    }
-                                    Log.i("isADMIN", String.valueOf(isAdmin));
-                                    if(isAdmin){
-                                        Intent intent = new Intent(MainActivity.this, AdminHomePage.class);
-                                        Log.i("ADMIN YASH", "HEY");
-                                        startActivity(intent);
-                                        finish();
-                                    }
-                                    else{
-                                        Intent intent = new Intent(MainActivity.this, HomePage.class);
-                                        Log.i("USER YASH", "HEY");
-                                        startActivity(intent);
-                                        finish();
-                                    }
-                                }
-                            } else {
-                                Log.d(TAG, "Error getting documents: ", task.getException());
-                            }
-                        }
-                    });
-        }
+//        if (firebaseAuth.getCurrentUser() != null) {
+//            db.collection("users")
+//                    .get()
+//                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                            if (task.isSuccessful()) {
+//                                for (QueryDocumentSnapshot document : task.getResult()) {
+//                                    if(String.valueOf(document.getData().get("uuid")).equals(user.getUid())  && String.valueOf(document.getData().get("isAdmin")).equals("true") ) {
+//                                        Log.i("ADMINNN", "ADMIN");
+//                                        isAdmin=true;
+//                                    }
+//                                    Log.i("isADMIN", String.valueOf(isAdmin));
+//                                    if(isAdmin){
+//                                        Intent intent = new Intent(MainActivity.this, AdminHomePage.class);
+//                                        Log.i("ADMIN YASH", "HEY");
+//                                        startActivity(intent);
+//                                        finish();
+//                                    }
+//                                    else{
+//                                        Intent intent = new Intent(MainActivity.this, HomePage.class);
+//                                        Log.i("USER YASH", "HEY");
+//                                        startActivity(intent);
+//                                        finish();
+//                                    }
+//                                }
+//                            } else {
+//                                Log.d(TAG, "Error getting documents: ", task.getException());
+//                            }
+//                        }
+//                    });
+//        }
     }
 
     public void doLogin(View view) {
