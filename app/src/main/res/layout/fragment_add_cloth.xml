@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/bgimage">
 
+
     <TextView
         android:id="@+id/addClothText"
         android:layout_width="341dp"
@@ -24,12 +25,45 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/cameraImageView"
+        android:layout_width="98dp"
+        android:layout_height="79dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="75dp"
+        android:src="@drawable/ic_baseline_camera_alt_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/galleryImageView"
+        android:layout_width="98dp"
+        android:layout_height="79dp"
+        android:layout_marginTop="75dp"
+        android:layout_marginEnd="64dp"
+        android:src="@drawable/gallery"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textDisplay"
+        android:layout_width="329dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="8dp"
+        android:text="Upload picture of the item"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cameraImageView" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/noOfCopiesTextInputLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="130dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/edittext_border"
         android:paddingLeft="5dp"
@@ -252,5 +286,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="132dp"
+        android:layout_height="119dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/galleryImageView"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/cameraImageView"
+        app:layout_constraintTop_toBottomOf="@+id/addClothText"
+        tools:srcCompat="@tools:sample/avatars" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
