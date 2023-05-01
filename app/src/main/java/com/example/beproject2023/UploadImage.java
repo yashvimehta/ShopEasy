@@ -83,7 +83,7 @@ public class UploadImage extends AppCompatActivity {
 
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (HomePage.contextOfApplication.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    if (UploadImage.this.checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                         requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
 
                     } else {
@@ -163,11 +163,12 @@ public class UploadImage extends AppCompatActivity {
                 }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        Intent intent = new Intent(UploadImage.this, HomePage.class);
+                        startActivity(intent);
+                        finish();
                     }
                 });
 
-                Intent intent = new Intent(UploadImage.this, HomePage.class);
-                startActivity(intent);
             }
         });
     }
@@ -198,9 +199,9 @@ public class UploadImage extends AppCompatActivity {
         Uri imageLocation = data.getData();
         currentImageUri=imageLocation;
         Bitmap photo = null;
-        Cursor cursor = HomePage.contextOfApplication.getContentResolver().query(data.getData(), null, null, null, null);
+        Cursor cursor = UploadImage.this.getContentResolver().query(data.getData(), null, null, null, null);
         try {
-            photo = MediaStore.Images.Media.getBitmap(HomePage.contextOfApplication.getContentResolver(), currentImageUri);
+            photo = MediaStore.Images.Media.getBitmap(UploadImage.this.getContentResolver(), currentImageUri);
             actualImage.setImageBitmap(photo);
             image = photo;
             Log.i("hi there", "p");
