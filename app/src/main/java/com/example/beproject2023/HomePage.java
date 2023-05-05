@@ -145,7 +145,7 @@ public class HomePage extends AppCompatActivity implements PaymentResultWithData
                 .build();
         ApiInterface apiInterface = retrofit.create(ApiInterface.class);
         Log.i("pooo",  TextUtils.join(",", itemm));
-        Call<Billing> mCall = apiInterface.sendMail("yashvimehta45@gmail.com", TextUtils.join(",", itemm),TextUtils.join(",", quantity),TextUtils.join(",", price));
+        Call<Billing> mCall = apiInterface.sendMail("malharbangdiwala03@gmail.com", TextUtils.join(",", itemm),TextUtils.join(",", quantity),TextUtils.join(",", price));
         mCall.enqueue(new Callback<Billing>() {
             @Override
             public void onResponse(Call<Billing> call, Response<Billing> response) {
